@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -93,104 +94,80 @@ class AppManager {
 
   void toItemPage (BuildContext context, GlobalKey<NavigatorState> nav, ItemData data, List<File> images, {bool editing=false}) {
     nav.currentState!.push(
-      CustomPageRoute(nextPage: ItemScreen(data, images, editing: editing,))
+      CustomPageRoute(nextPage: ItemScreen(data, images, editing: editing,)),
     );
   }
 
   void toBrandPage (BuildContext context, GlobalKey<NavigatorState> nav, Brand brand) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return BrandScreen(brand);
-        })
+      CustomPageRoute(nextPage: BrandScreen(brand)),
     );
   }
 
   void toUserPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return UserScreen();
-        })
+      CustomPageRoute(nextPage: UserScreen()),
     );
   }
 
   void toProfilePage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return ProfileScreen();
-        })
+      CustomPageRoute(nextPage: ProfileScreen()),
     );
   }
 
   void toShoppingPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     loadCart = true;
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return ShoppingScreen();
-      })
+      CustomPageRoute(nextPage: ShoppingScreen()),
     );
   }
 
   void toPaymentPage (BuildContext context, GlobalKey<NavigatorState> nav, double price, double discount) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return PaymentScreen(price, discount);
-        })
+      CustomPageRoute(nextPage: PaymentScreen(price, discount)),
     );
   }
 
   void toPostPaymentPage (BuildContext context, GlobalKey<NavigatorState> nav, Map<String, String> results) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return PostPaymentScreen(results);
-        })
+      CustomPageRoute(nextPage: PostPaymentScreen(results)),
     );
   }
 
   void toInvitationPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return InvitationScreen();
-        })
+      CustomPageRoute(nextPage: InvitationScreen()),
     );
   }
 
   void toOrderPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return OrderScreen();
-      })
+      CustomPageRoute(nextPage: OrderScreen()),
     );
   }
 
   void toOrderEditPage (BuildContext context, GlobalKey<NavigatorState> nav, OrderData order) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return OrderEditScreen(order);
-        })
+      CustomPageRoute(nextPage: OrderEditScreen(order)),
     );
   }
   
   void toOrderDetailsPage (BuildContext context, GlobalKey<NavigatorState> nav, OrderData order) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return OrderDetailsScreen(order);
-        })
+      CustomPageRoute(nextPage: OrderDetailsScreen(order)),
     );
   }
 
   void toReturnsPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return ReturnsScreen();
-      })
+      CustomPageRoute(nextPage: ReturnsScreen()),
     );
   }
 
   void toSettingsPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return SettingsScreen();
-        })
+      CustomPageRoute(nextPage: SettingsScreen()),
     );
   }
 
@@ -204,17 +181,13 @@ class AppManager {
 
   void toSignUpScreen (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return SignUpScreen();
-      })
+      CustomPageRoute(nextPage: SignUpScreen()),
     );
   }
 
   void toLoginScreen (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return LoginScreen();
-      })
+      CustomPageRoute(nextPage: LoginScreen()),
     );
   }
 
@@ -224,11 +197,7 @@ class AppManager {
 
   void logOutNav (GlobalKey<NavigatorState> nav) {
     nav.currentState!.pushReplacement(
-      MaterialPageRoute(
-        builder: (context) {
-          return LoginPage();
-        }
-      )
+      CustomPageRoute(nextPage: LoginPage()),
     );
   }
 
