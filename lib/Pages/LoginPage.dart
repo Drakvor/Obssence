@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Pages/Login/WelcomeScreen.dart';
 
@@ -38,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
         dispose();
         return true;
       },
-      child: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          primary: true,
-          backgroundColor: utils.resourceManager.colours.background,
-          body: Stack(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        primary: true,
+        backgroundColor: utils.resourceManager.colours.background,
+        body: SafeArea(
+          child: Stack(
             children: [
               buildBG(),
               buildPage(),
@@ -73,9 +74,7 @@ class _LoginPageState extends State<LoginPage> {
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           default:
-            return MaterialPageRoute(builder: (context) {
-              return WelcomeScreen();
-            });
+            return CustomPageRoute(nextPage: WelcomeScreen());
         }
       },
     );

@@ -13,7 +13,7 @@ class Utils {
   Navigator? mainNavObj;
   Navigator? bgNavObg;
   Navigator? pageNavObj;
-  Navigator? agenNavObj;
+  Navigator? agentNavObj;
   Navigator? loginNavObj;
 
   double screenHeight;
