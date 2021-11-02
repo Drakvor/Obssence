@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Data/Brand.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Pages/Home/BrandScreen.dart';
@@ -92,9 +93,7 @@ class AppManager {
 
   void toItemPage (BuildContext context, GlobalKey<NavigatorState> nav, ItemData data, List<File> images, {bool editing=false}) {
     nav.currentState!.push(
-        MaterialPageRoute(builder: (context) {
-          return ItemScreen(data, images, editing: editing,);
-        })
+      CustomPageRoute(nextPage: ItemScreen(data, images, editing: editing,))
     );
   }
 

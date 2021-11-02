@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
@@ -38,9 +39,7 @@ class _HomePageState extends State<HomePage> {
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             default:
-              return MaterialPageRoute(builder: (context) {
-                return BrowseScreen();
-              });
+              return CustomPageRoute(nextPage: BrowseScreen());
           }
         },
       );
@@ -80,12 +79,12 @@ class _HomePageState extends State<HomePage> {
         dispose();
         return true;
       },
-      child: SafeArea(
-        child:  Scaffold(
-          resizeToAvoidBottomInset: false,
-          primary: true,
-          backgroundColor: utils.resourceManager.colours.background,
-          body: Stack(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        primary: true,
+        backgroundColor: utils.resourceManager.colours.background,
+        body: SafeArea(
+          child: Stack(
             children: [
               buildBG(),
               buildPage(),

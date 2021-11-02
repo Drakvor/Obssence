@@ -69,7 +69,7 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
 
   Widget build (BuildContext context) {
     return Scaffold(
-      backgroundColor: utils.resourceManager.colours.transparent,
+      backgroundColor: utils.resourceManager.colours.background,
       body: buildStack(context),
     );
   }
