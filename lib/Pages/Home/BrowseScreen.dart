@@ -56,7 +56,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
       body: Stack(
         children: [
           Positioned(
-            top: 10,
+            top: 0,
             left: 0,
             right: 0,
             height: MediaQuery.of(context).size.height - 10,
@@ -98,7 +98,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
         Container(
           child: buildTodayProduct(),
         ),
-        CustomThinDivider(),
         Container(
           margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Text("지난 라인업", style: utils.resourceManager.textStyles.base18_100,),
@@ -107,6 +106,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
           child: Container(
             child: buildGridView(context),
           ),
+        ),
+        Container(
+          height: 20,
         ),
       ],
     );

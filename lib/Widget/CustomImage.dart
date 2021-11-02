@@ -11,9 +11,11 @@ class CustomImage extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
     return Container(
-      child: FittedBox(
-        fit: BoxFit.fitHeight,
-        child: Image.file(image),
+      child: ClipRect(
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Image.file(image),
+        ),
       ),
     );
   }

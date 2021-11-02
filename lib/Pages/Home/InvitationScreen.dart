@@ -8,6 +8,7 @@ import 'package:luxury_app_pre/Widget/CustomDivider.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'dart:io';
 
 class InvitationScreen extends StatefulWidget {
 
@@ -87,7 +88,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
           CustomThinDivider(),
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Text("저희 서비스의 혜택을 함께 누리고 싶은 분은 초대하여 특별한 서비스를 함께 누리는 것은 어때요? 아래 전화번호를 직접 기입하시거나, 주소록에 등록되어있는 분을 초대해요.", style: utils.resourceManager.textStyles.base12grey,),
+            child: Text("저희 서비스의 혜택을 함께 누리고 싶은 분은 초대하여 특별한 서비스를 함께 누리는 것은 어때요? 아래 전화번호를 직접 기입하시거나, 주소록에 등록되어있는 분을 초대해요.", style: utils.resourceManager.textStyles.base12,),
           ),
           Expanded(
             flex: 1,
@@ -99,7 +100,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomButton(
@@ -109,10 +110,10 @@ class _InvitationScreenState extends State<InvitationScreen> {
                       state.setNumber(contact.phoneNumber?.number?.replaceAll(new RegExp(r'[^0-9]'), '') ?? "");
                     });
                   },
-                  text: "주소록",
+                  text: "주소록에서 불러오기",
                   style: utils.resourceManager.textStyles.base14,
                   h: 30,
-                  w: 90,
+                  w: 150,
                 ),
                 Container(
                   width: 20,
@@ -127,12 +128,17 @@ class _InvitationScreenState extends State<InvitationScreen> {
                         "target": state.phoneNumber,
                       }
                     );
-                    await launch("sms:01065809860");
+                    if (Platform.isAndroid) {
+                      await launch("sms:01065809860");
+                    }
+                    if (Platform.isIOS) {
+                      await launch("sms:01065809860");
+                    }
                   },
-                  text: "확인",
+                  text: "초대권 보내기",
                   style: utils.resourceManager.textStyles.base14,
                   h: 30,
-                  w: 90,
+                  w: 150,
                 ),
               ],
             ),

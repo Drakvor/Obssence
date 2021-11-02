@@ -38,11 +38,11 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
   _ItemScreenState(this.item, this.images, this.editing);
 
   Future<void> listen () async {
-    if(scrollCont.offset <= 250 && scrollCont.offset > 0 && scrollCont.position.isScrollingNotifier.value && _scrolling == false) {
+    if(scrollCont.offset <= (MediaQuery.of(context).size.height - utils.totalPadding - 188)/2 && scrollCont.offset > 0 && scrollCont.position.isScrollingNotifier.value && _scrolling == false) {
       _scrolling = true;
-      await scrollCont.animateTo(500, duration: Duration(milliseconds: 500), curve: Curves.ease).then((_) {_scrolling = false;});
+      await scrollCont.animateTo(MediaQuery.of(context).size.height - utils.totalPadding - 188, duration: Duration(milliseconds: 500), curve: Curves.ease).then((_) {_scrolling = false;});
     }
-    if(scrollCont.offset > 250 && scrollCont.offset < 500 && scrollCont.position.isScrollingNotifier.value && _scrolling == false) {
+    if(scrollCont.offset > (MediaQuery.of(context).size.height - utils.totalPadding - 188)/2 && scrollCont.offset < (MediaQuery.of(context).size.height - utils.totalPadding - 188) && scrollCont.position.isScrollingNotifier.value && _scrolling == false) {
       _scrolling = true;
       scrollCont.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease).then((_) {_scrolling = false;});
     }
@@ -133,13 +133,13 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
 
   Widget getImages () {
     return Container(
-      height: 500,
+      height: MediaQuery.of(context).size.height - utils.totalPadding - 188,
       child: Stack(
         children: [
           Container(
               child: PageView(
                 physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
+                scrollDirection: Axis.horizontal,
                 children: getPages(),
               )
           ),
@@ -364,7 +364,7 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
 
 
   Widget buildButtons (BuildContext context) {
-    String _updatedCount = utils.dataManager.user!.cart.listSelections.length.toString();
+    String _updatedCount = (utils.appManager.loggedIn) ? utils.dataManager.user!.cart.listSelections.length.toString() : "0";
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
