@@ -189,38 +189,41 @@ class _TodayItemTileState extends State<TodayItemTile> {
               Center(
                 child: CustomImage(images[0]),
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 5,
-                      sigmaY: 5,
-                    ),
-                    child: Container(
-                      color: Color(0x55ffffff),
-                      constraints: BoxConstraints.expand(),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: 200,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 5,
+                        sigmaY: 5,
+                      ),
                       child: Container(
-                        margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(item.brand, style: utils.resourceManager.textStyles.base13_700U),
-                            Container(
-                              height: 20,
-                            ),
-                            Text(item.name, style: utils.resourceManager.textStyles.base12_100),
-                            Container(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("₩" + item.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12),
-                                Text(item.sale!.value.toString() + "%", style: utils.resourceManager.textStyles.base12),
-                              ],
-                            ),
-                          ],
+                        color: Color(0x55ffffff),
+                        constraints: BoxConstraints.expand(),
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.brand, style: utils.resourceManager.textStyles.base13_700U),
+                              Container(
+                                height: 20,
+                              ),
+                              Text(item.name, style: utils.resourceManager.textStyles.base12_100),
+                              Container(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("₩" + item.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12),
+                                  Text(item.sale!.value.toString() + "%", style: utils.resourceManager.textStyles.base12),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

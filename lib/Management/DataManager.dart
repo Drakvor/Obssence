@@ -48,6 +48,9 @@ class DataManager {
       );
       listBrands.add(newBrand);
     }
+    listBrands.add(Brand(
+      name: "Upcoming",
+    ));
     brands = listBrands;
   }
 
