@@ -149,7 +149,6 @@ class _TodayItemTileState extends State<TodayItemTile> {
       child: Stack(
         children: [
           Container(
-            color: Color(0x40c4c4c4),
           ),
           buildPageView(),
           Positioned(
@@ -217,7 +216,7 @@ class _TodayItemTileState extends State<TodayItemTile> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("₩" + item.price.toString(), style: utils.resourceManager.textStyles.base12),
+                                Text("₩" + item.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12),
                                 Text(item.sale!.value.toString() + "%", style: utils.resourceManager.textStyles.base12),
                               ],
                             ),

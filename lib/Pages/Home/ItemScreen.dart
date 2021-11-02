@@ -180,7 +180,7 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("₩" + item.price.toString(), style: utils.resourceManager.textStyles.base13,),
+              Text("₩" + item.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base13,),
               Text(item.sale!.value.toString() + "%", style: utils.resourceManager.textStyles.base13,),
             ],
           ),
@@ -326,14 +326,6 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
                 }
                 else {
                   CollectionReference selections = FirebaseFirestore.instance.collection("selections");
-                  OrderItem newSelection = new OrderItem(
-                    quantity: selState.quantity,
-                    size: item.availableSizes![selState.size],
-                    itemId: item.id,
-                    item: item,
-                  );
-                  await newSelection.getItemData();
-                  utils.dataManager.user!.cart.addSelection(newSelection);
                   DocumentReference selection = await selections.add({
                     "size": item.availableSizes![selState.size],
                     "quantity": selState.quantity,
@@ -343,6 +335,15 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
                   await selections.doc(selection.id).update({
                     "id": selection.id,
                   });
+                  OrderItem newSelection = new OrderItem(
+                    id: selection.id,
+                    quantity: selState.quantity,
+                    size: item.availableSizes![selState.size],
+                    itemId: item.id,
+                    item: item,
+                  );
+                  await newSelection.getItemData();
+                  utils.dataManager.user!.cart.addSelection(newSelection);
                   await overlayCont.animateTo(600, duration: Duration(milliseconds: 200), curve: Curves.linear);
                   setState(() {});
                   utils.appManager.buildAlertDialog(context, "상품을 쇼핑백에 담았습니다.");

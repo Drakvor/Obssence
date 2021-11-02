@@ -141,9 +141,11 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
   Widget buildStack () {
     return Stack(
       children: [
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+        Positioned(
+          top: 0,
+          right: 0,
+          left: 0,
+          bottom: 100,
           child: Column(
             children: [
               buildHeader(),
@@ -269,7 +271,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
           itemBuilder: (context, index) {
             return Column(
               children: [
-                ShoppingCartItem(state, setPageState, utils.dataManager.user!.cart.listSelections[index]),
+                Container(
+                  key: new UniqueKey(),
+                  child: ShoppingCartItem(state, setPageState, utils.dataManager.user!.cart.listSelections[index]),
+                ),
                 CustomThinDivider(),
               ],
             );
@@ -327,7 +332,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("총 상품 가격: ", style: utils.resourceManager.textStyles.base12),
-                            Text("￦" + price.toInt().toString(), style: utils.resourceManager.textStyles.base13),
+                            Text("￦" + price.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base13),
                           ],
                         ),
                         Row(
@@ -341,7 +346,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("할인: ", style: utils.resourceManager.textStyles.base12),
-                            Text("- ￦" + discount.toInt().toString(), style: utils.resourceManager.textStyles.base13_700gold),
+                            Text("- ￦" + discount.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base13_700gold),
                           ],
                         ),
                       ],
@@ -376,11 +381,12 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
       child: Container(
         height: 100,
         width: MediaQuery.of(context).size.width,
+        color: utils.resourceManager.colours.background,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-              child: Text("합계: ￦" + (price - discount).toInt().toString(), style: utils.resourceManager.textStyles.base14_700),
+              child: Text("합계: ￦" + (price - discount).toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base14_700),
             ),
             Container(
               child: Row(

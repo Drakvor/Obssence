@@ -117,10 +117,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
   Widget buildBrands () {
     return CarouselSlider.builder(
       carouselController: brandControl,
-      itemCount: utils.dataManager.brands!.length,
+      itemCount: utils.dataManager.brands!.length + 1,
       itemBuilder: (context, index, realIndex) {
-        Brand thisBrand = utils.dataManager.brands![index];
-        return BrandTile(thisBrand);
+        return BrandTile(utils.dataManager.brands![index]);
       },
       options: CarouselOptions(
         viewportFraction: 0.5,

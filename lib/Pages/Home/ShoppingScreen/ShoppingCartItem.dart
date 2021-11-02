@@ -149,10 +149,10 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
                 height: 20,
               ),
               Container(
-                child: Text("₩" + (selection.item!.price * (1 - selection.item!.sale!.value/100)).toString(), style: utils.resourceManager.textStyles.base12,),
+                child: Text("₩" + (selection.item!.price * (1 - selection.item!.sale!.value/100)).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12,),
               ),
               Container(
-                child: Text("₩" + (selection.item!.price).toString(), style: utils.resourceManager.textStyles.base12Sgrey,),
+                child: Text("₩" + (selection.item!.price).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12Sgrey,),
               ),
               Container(
                 child: Text((selection.item!.sale!.value).toString() + "% 할인", style: utils.resourceManager.textStyles.base12_700gold,),
@@ -171,6 +171,7 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
               utils.dataManager.user!.cart.removeSelection(selection);
               await selections.doc(selection.id).delete();
               setPageState(() {});
+              utils.appManager.buildAlertDialog(context, "상품을 쇼핑백에서 제거했습니다.");
             },
             image: utils.resourceManager.images.closeButton,
             imagePressed: utils.resourceManager.images.closeButton,

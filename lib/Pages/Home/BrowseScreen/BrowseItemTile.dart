@@ -159,7 +159,7 @@ class _BrowseItemTileState extends State<BrowseItemTile> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("₩" + item.price.toString(), style: utils.resourceManager.textStyles.base12),
+                                Text("₩" + item.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base12),
                                 Text(item.sale!.value.toString() + "%", style: utils.resourceManager.textStyles.base12),
                               ],
                             ),
