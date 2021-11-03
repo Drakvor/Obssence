@@ -11,30 +11,26 @@ class AgentMain extends StatefulWidget {
   _AgentMainState createState() => _AgentMainState();
 }
 
-class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
+class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMixin {
   late final AnimationController overlayCont;
-  late final AnimationController pageCont;
   late final TextEditingController textCont;
   bool buttonPressed = false;
   bool textActive = false;
 
   void agentOff () {
     overlayCont.animateTo(220, duration: Duration(milliseconds: 200), curve: Curves.linear);
-    pageCont.animateTo(MediaQuery.of(context).size.height + 20, duration: Duration(milliseconds: 200), curve: Curves.linear);
     utils.appManager.setAgentOff();
   }
 
   @override
   void initState () {
     super.initState();
-    pageCont = AnimationController.unbounded(value: 3000, vsync: this);
     overlayCont = AnimationController.unbounded(value: 220, vsync: this);
     textCont = TextEditingController();
   }
 
   void dispose () {
     overlayCont.dispose();
-    pageCont.dispose();
     textCont.dispose();
     super.dispose();
   }
@@ -60,77 +56,12 @@ class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
         ),
         Positioned(
           bottom: 0,
-          left: 0,
-          right: 0,
-          top: 0,
-          child: buildCoverScreen2(),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          left: 0,
-          height: MediaQuery.of(context).size.height - utils.totalPadding,
-          child: buildPage(),
-        ),
-        Positioned(
-          bottom: 0,
           right: 0,
           left: 0,
           height: 220,
           child: buildOverlay(),
         ),
       ],
-    );
-  }
-
-  Widget buildPage () {
-    return AnimatedBuilder(
-      animation: pageCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, pageCont.value, 0, 1,
-          ),
-          child: child,
-        );
-      },
-      child: GestureDetector(
-        onVerticalDragStart: (DragStartDetails details) {
-          FocusScope.of(context).unfocus();
-        },
-        onVerticalDragUpdate: (DragUpdateDetails details) {
-          pageCont.animateTo((pageCont.value + details.delta.dy > 50) ? pageCont.value+details.delta.dy : 50, duration: Duration(seconds: 0), curve: Curves.linear);
-        },
-        onVerticalDragEnd: (DragEndDetails details) {
-          if (pageCont.value > (MediaQuery.of(context).size.height - utils.totalPadding)/2) {
-            pageCont.animateTo(MediaQuery.of(context).size.height, duration: Duration(milliseconds: 200), curve: Curves.linear);
-            utils.appManager.setAgentOff();
-          }
-          if (pageCont.value <= (MediaQuery.of(context).size.height - utils.totalPadding)/2) {
-            pageCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
-          }
-        },
-        onVerticalDragCancel: () {
-          pageCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
-        },
-        child: Container(
-          height: MediaQuery.of(context).size.height - utils.totalPadding,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: utils.resourceManager.colours.background,
-          ),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 200),
-              child: CustomSearchBar(textCont, "검색"),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -237,7 +168,7 @@ class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
                 CustomButton(
                   whenPressed: () async {
                     await utils.appManager.agentOff!();
-                    pageCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                    utils.appManager.toSearchPage(context, utils.pageNav);
                   },
                   text: "검색 홈",
                   style: utils.resourceManager.textStyles.base14,
@@ -281,48 +212,11 @@ class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildCoverScreen2 () {
-    return AnimatedBuilder(
-      animation: pageCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, (pageCont.value < MediaQuery.of(context).size.height - 20) ? 0 : MediaQuery.of(context).size.height, 0, 1,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              print(overlayCont.value.toString() + " " + pageCont.value.toString() + " " + MediaQuery.of(context).size.height.toString());
-              FocusScope.of(context).unfocus();
-            },
-            child: Opacity(
-              opacity: ((1-(pageCont.value-50)/(MediaQuery.of(context).size.height-50))/2 >= 0) ? (1-(pageCont.value-50)/(MediaQuery.of(context).size.height-50))/2 : 0,
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                color: Color(0xff000000),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget agentSymbol () {
     return GestureDetector(
       onTap: () {
         if (!utils.appManager.agentOn){
           overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
-          utils.appManager.setAgentOn();
-        }
-      },
-      onLongPress: () {
-        if (!utils.appManager.agentOn){
-          pageCont.animateTo(MediaQuery.of(context).size.height - utils.totalPadding, duration: Duration(milliseconds: 0), curve: Curves.linear);
-          pageCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
           utils.appManager.setAgentOn();
         }
       },

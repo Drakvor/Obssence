@@ -18,6 +18,7 @@ import 'package:luxury_app_pre/Pages/Home/PaymentScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/PostPaymentScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ProfileScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ReturnsScreen.dart';
+import 'package:luxury_app_pre/Pages/Home/SearchScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/SettingsScreen.dart';
 import 'dart:io';
 import 'package:luxury_app_pre/Pages/Home/ShoppingScreen.dart';
@@ -85,11 +86,15 @@ class AppManager {
       utils.agentManager.setSearchTags(tags);
     }
     nav.currentState!.push(
-      MaterialPageRoute(builder: (context) {
-        return BrowseScreen();
-      })
+      CustomPageRoute(nextPage: BrowseScreen()),
     );
     changeState();
+  }
+
+  void toSearchPage (BuildContext context, GlobalKey<NavigatorState> nav) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: SearchScreen()),
+    );
   }
 
   void toItemPage (BuildContext context, GlobalKey<NavigatorState> nav, ItemData data, List<File> images, {bool editing=false}) {

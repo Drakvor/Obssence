@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
+import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final TextEditingController textControl;
@@ -19,7 +20,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   _CustomSearchBarState(this.textControl, this.hintText);
 
-
   @override
   Widget build (BuildContext context) {
     return buildBox(context);
@@ -27,15 +27,18 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   Widget buildBox (BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+      width: 300,
+      height: 40,
       child: Stack(
         children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
+          Center(
             child: node.hasFocus ? Image.asset(utils.resourceManager.images.searchBarImage) : Image.asset(utils.resourceManager.images.searchBarImageInactive),
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          Positioned(
+            top: 16,
+            left: 10,
+            right: 10,
+            bottom: 5,
             child: TextField(
               focusNode: node,
               autofocus: false,
@@ -61,6 +64,21 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                   //notify
                 }
               },
+            ),
+          ),
+          Positioned(
+            top: 5,
+            right: 5,
+            bottom: 5,
+            width: 30,
+            child: CustomRoundButton(
+              whenPressed: () {
+                textControl.clear();
+              },
+              image: utils.resourceManager.images.closeButton,
+              imagePressed: utils.resourceManager.images.closeButton,
+              w: 30,
+              h: 30,
             ),
           ),
         ],
