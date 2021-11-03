@@ -3,6 +3,7 @@ import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboards.dart';
 class LoginState {
   int state = 0;
   bool phoneKeyboardActiveState = false;
+  bool phoneNumberError = false;
 
   String phoneNumber = "";
   String password = "";
@@ -43,6 +44,10 @@ class LoginState {
 
   void unpressPhoneButton (int index) {
     phoneButtonPressed[index] = false;
+  }
+
+  void setPhoneNumberError(bool value) {
+    phoneNumberError = value;
   }
 
   void nextState () {

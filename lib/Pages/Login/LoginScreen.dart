@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   setState(() {
                     state.toggleActivatePhoneKeyboard();
-                    print(state.phoneKeyboardActiveState);
+                    state.setPhoneNumberError(false);
                   });
                 },
                 child: Container(
@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Center(
                         child: IgnorePointer(
                           ignoring:true,
-                          child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey,),
+                          child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumberError)? utils.resourceManager.textStyles.base13Red : ((state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey)),
                         ),
                       ),
                     )
@@ -235,6 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
         whenPressed: () async {
           if (!validNumber()) {
             utils.appManager.buildAlertDialog(context, "유효한 전화번호를 기입해 주세요.");
+            setState(() {
+              state.setPhoneNumberError(true);
+            });
             return;
           }
           List emailExists = await FirebaseAuth.instance.fetchSignInMethodsForEmail(state.phoneNumber + "@obssence.com");
@@ -245,6 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
           }
           setState(() {
             state.nextState();
+            state.setPhoneNumberError(false);
           });
         },
         text: "확인",
@@ -261,6 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
         whenPressed: () async {
           setState(() {
             state.clearPhoneNumber();
+            state.setPhoneNumberError(false);
           });
         },
         text: "Clear",
@@ -351,17 +356,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   setState(() {
                     state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
                     state.pressPhoneButton(index);
+                    state.setPhoneNumberError(false);
                   });
                 }
               },
               onTapUp: (details) {
                 setState(() {
                   state.unpressPhoneButton(index);
+                  state.setPhoneNumberError(false);
                 });
               },
               onTapCancel: () {
                 setState(() {
                   state.unpressPhoneButton(index);
+                  state.setPhoneNumberError(false);
                 });
               },
               child: Container(
@@ -381,6 +389,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (state.phoneNumber.length > 0) {
                   setState(() {
                     state.subtractFromPhoneNumber();
+                    state.setPhoneNumberError(false);
                   });
                 }
               },
