@@ -6,7 +6,6 @@ import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:dio/dio.dart';
 import 'package:iamport_flutter/iamport_payment.dart';
 import 'package:iamport_flutter/model/payment_data.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:luxury_app_pre/Pages/HomePage.dart';
@@ -100,7 +99,6 @@ class LandingPage extends StatelessWidget {
 
 class InitialPage extends StatelessWidget {
   final TextEditingController control = new TextEditingController();
-  final AudioPlayer audio = new AudioPlayer();
 
   void testServer () async {
     try {
@@ -115,9 +113,6 @@ class InitialPage extends StatelessWidget {
   }
 
   void testAudio () async {
-    await audio.setUrl('http://211.40.224.20:8080/api/audio/lol');
-    audio.setVolume(100);
-    audio.play();
   }
 
   @override

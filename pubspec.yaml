@@ -24,22 +24,17 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^1.6.0
-  firebase_database: ^7.1.1
+  firebase_database: ^8.0.1
   firebase_auth: ^3.1.0
   cloud_firestore: ^2.5.1
   firebase_storage: ^10.0.3
   dio: ^4.0.0
   iamport_flutter: ^0.10.0-dev.2
   dart_json_mapper:
-  just_audio: ^0.9.7 #for agent vui
-  async: ^2.5.0
-  audio_session: ^0.1.6 #for agent vui
   path_provider: ^2.0.0
   uuid: ^3.0.1 #for server access
   lottie: ^1.2.1 #for agent animations <---- USE THIS ONE
-  flutter_sound: ^8.3.12 #for agent vui
   social_embed_webview: ^0.3.2 #for insta embed <---- USE THIS ONE
-  record: ^3.0.0 #for agent vui
   #permission_handler: ^8.1.6
   url_launcher: ^6.0.12 #for invitation sending
   contacts_service: ^0.6.3 #Also for invitation sending
