@@ -2,10 +2,16 @@ import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboards.dart';
 
 class LoginState {
   int state = 0;
+  bool phoneKeyboardActiveState = false;
+
   String phoneNumber = "";
   String password = "";
   bool showPassword = false;
   List<bool> phoneButtonPressed = List.filled(Keyboards.phoneNumberKeys.length, false);
+
+  void clearPhoneNumber () {
+    phoneNumber = "";
+  }
 
   void appendToPhoneNumber (String number) {
     phoneNumber = phoneNumber + number;
@@ -25,6 +31,10 @@ class LoginState {
 
   void toggleShowPassword () {
     showPassword = !showPassword;
+  }
+
+  void toggleActivatePhoneKeyboard () {
+    phoneKeyboardActiveState = !phoneKeyboardActiveState;
   }
 
   void pressPhoneButton (int index) {

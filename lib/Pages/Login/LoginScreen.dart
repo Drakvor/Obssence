@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildPhoneNumberConfirm(),
+            child: buildPhoneNumberButtons(),
           ),
           Expanded(
             flex: 1,
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildPhoneNumberKeyboard(),
+            child: (state.phoneKeyboardActiveState)? buildPhoneNumberKeyboard() : Container(height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio),
           ),
         ],
       ),
@@ -127,11 +127,20 @@ class _LoginScreenState extends State<LoginScreen> {
           width: (MediaQuery.of(context).size.width < 299) ? MediaQuery.of(context).size.width - 10 : 343,
           child: Stack(
             children: [
-              Container(
-                child: Center(
-                  child: Image.asset(utils.resourceManager.images.phoneNumberFieldInactive),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    state.toggleActivatePhoneKeyboard();
+                    print(state.phoneKeyboardActiveState);
+                  });
+                },
+                child: Container(
+                  child: Center(
+                    child: Image.asset(utils.resourceManager.images.phoneNumberFieldInactive),
+                  ),
                 ),
               ),
+
               Positioned(
                 top: 0,
                 bottom: 0,
@@ -241,6 +250,37 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget buildPhoneNumberClear () {
+    return Container(
+      child: CustomButton(
+        whenPressed: () async {
+          setState(() {
+            state.clearPhoneNumber();
+          });
+        },
+        text: "Clear",
+        style: utils.resourceManager.textStyles.base14,
+        h: 30,
+        w: 50,
+      ),
+    );
+  }
+
+  Widget buildPhoneNumberButtons () {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildPhoneNumberClear(),
+          Container(
+            width: 20,
+          ),
+          buildPhoneNumberConfirm(),
+        ]
+      )
+    );
+  }
+
   Widget buildPasswordButtons () {
     return Container(
       child: Row(
@@ -301,13 +341,23 @@ class _LoginScreenState extends State<LoginScreen> {
         itemBuilder: (context, index) {
           if (index < Keyboards.phoneNumberKeys.length) {
             return GestureDetector(
-              onTap: () {
+              onTapDown: (details) {
                 if (state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
                   setState(() {
                     state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
                     state.pressPhoneButton(index);
                   });
                 }
+              },
+              onTapUp: (details) {
+                setState(() {
+                  state.unpressPhoneButton(index);
+                });
+              },
+              onTapCancel: () {
+                setState(() {
+                  state.unpressPhoneButton(index);
+                });
               },
               child: Container(
                 height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
