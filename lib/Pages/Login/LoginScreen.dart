@@ -346,9 +346,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget getCorrectKeyboard () {
-    print(state.password.length);
-    print(passwordMaxLength);
-    print(passwordNumNumbers);
     if (state.password.length < passwordNumNumbers) {
       return buildPasswordKeyboard();
     }
