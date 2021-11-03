@@ -306,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.width*(2/3)/4,
                 width: MediaQuery.of(context).size.width/3,
-                color: utils.resourceManager.colours.almostBackground,
+                key: new UniqueKey(),
                 child: Center(
                   child: Text(numberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
@@ -323,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.width*(2/3)/4,
                 width: MediaQuery.of(context).size.width/3,
-                color: utils.resourceManager.colours.almostBackground,
+                key: new UniqueKey(),
                 child: Center(
                   child: Container(
                     height: 20,
