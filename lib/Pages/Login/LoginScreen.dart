@@ -70,7 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: (state.phoneKeyboardActiveState)? buildPhoneNumberKeyboard() : Container(height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio),
+            child: AnimatedCrossFade(
+              duration: const Duration(milliseconds: 150),
+              firstChild: buildPhoneNumberKeyboard(),
+              secondChild: Container(height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio),
+              crossFadeState: state.phoneKeyboardActiveState ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            )
           ),
         ],
       ),
