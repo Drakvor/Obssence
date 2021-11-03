@@ -39,6 +39,7 @@ class TextStyleRes {
   TextStyle baseLargeBold = TextStyle(fontFamily: "NanumSquare", fontSize: 20, fontWeight: FontWeight.w700);
   TextStyle baseWhite = TextStyle(fontFamily: "NanumSquare", fontSize: 15, color: Color(0xffffffff));
   TextStyle baseGrey = TextStyle(fontFamily: "NanumSquare", fontSize: 15, color: Color(0xff888888));
+  TextStyle baseRed = TextStyle(fontFamily: "NanumSquare", fontSize: 15, color: Color(0xffff5555));
 
   TextStyle dots = TextStyle(fontFamily: "5x5Dots", fontSize: 12);
   TextStyle dots15 = TextStyle(fontFamily: "5x5dots", fontSize: 15);

@@ -140,7 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               Positioned(
                 top: 0,
                 bottom: 0,
@@ -153,9 +152,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                       height: 50,
                       child: Center(
-                        child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey,),
+                        child: IgnorePointer(
+                          ignoring:true,
+                          child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey,),
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -173,7 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 50,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Text("+82", style: utils.resourceManager.textStyles.base13, textAlign: TextAlign.end,),
+                        child: IgnorePointer(
+                          ignoring:true,
+                          child: Text("+82", style: utils.resourceManager.textStyles.base13, textAlign: TextAlign.end,),
+                        ),
                       ),
                     ),
                   ],
