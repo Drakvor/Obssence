@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginState state = LoginState();
 
   bool validNumber () {
-    return (state.phoneNumber.length == Keyboards.numberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+    return (state.phoneNumber.length == Keyboards.phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
   }
 
   @override
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: utils.resourceManager.colours.background,
       body: Stack(
         children: [
-          (state.state == 0) ? getNumber() : getPassword(),
+          (state.state == 0) ? getPhoneNumber() : getPassword(),
           Positioned(
             top: 0,
             left: 0,
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget getNumber () {
+  Widget getPhoneNumber () {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,11 +58,11 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberField(),
+            child: buildPhoneNumberTextField(),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberConfirm(),
+            child: buildPhoneNumberConfirm(),
           ),
           Expanded(
             flex: 1,
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberKeyboard(),
+            child: buildPhoneNumberKeyboard(),
           ),
         ],
       ),
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: buildPasswordField(),
+            child: buildPasswordTextField(),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -110,14 +110,14 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: getCorrectKeyboard(),
+            child: getCorrectPasswordKeyboard(),
           ),
         ],
       ),
     );
   }
 
-  Widget buildNumberField () {
+  Widget buildPhoneNumberTextField () {
     return Container(
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildPasswordField () {
+  Widget buildPasswordTextField () {
     return Container(
       height: 100,
       child: Row(
@@ -215,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildNumberConfirm () {
+  Widget buildPhoneNumberConfirm () {
     return Container(
       child: CustomButton(
         whenPressed: () async {
@@ -287,33 +287,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildNumberKeyboard () {
+  Widget buildPhoneNumberKeyboard () {
     return Container(
       height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
+          crossAxisCount: Keyboards.phoneNumberCols,
+          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
         ),
-        itemCount: Keyboards.numberKeys.length+1,
+        itemCount: Keyboards.phoneNumberKeys.length+1,
         itemBuilder: (context, index) {
-          if (index < Keyboards.numberKeys.length) {
+          if (index < Keyboards.phoneNumberKeys.length) {
             return GestureDetector(
               onTap: () {
-                if (state.phoneNumber.length < Keyboards.numberKeys.length) {
+                if (state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
                   setState(() {
-                    state.appendToPhoneNumber(Keyboards.numberKeys[index]);
+                    state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/3,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
+                width: MediaQuery.of(context).size.width/Keyboards.phoneNumberCols,
                 key: new UniqueKey(),
                 child: Center(
-                  child: Text(Keyboards.numberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+                  child: Text(Keyboards.phoneNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
               ),
             );
@@ -328,8 +328,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/3,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
+                width: MediaQuery.of(context).size.width/Keyboards.phoneNumberCols,
                 key: new UniqueKey(),
                 child: Center(
                   child: Container(
@@ -345,12 +345,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget getCorrectKeyboard () {
+  Widget getCorrectPasswordKeyboard () {
     if (state.password.length < passwordNumNumbers) {
-      return buildPasswordKeyboard();
+      return buildPasswordNumberKeyboard();
     }
     if (state.password.length == passwordNumNumbers || state.password.length == passwordMaxLength) {
-      return buildLetterKeyboard();
+      return buildPasswordLetterKeyboard();
     }
     else {
       return Container(
@@ -359,33 +359,33 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Widget buildPasswordKeyboard () {
+  Widget buildPasswordNumberKeyboard () {
     return Container(
       height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
+          crossAxisCount: Keyboards.passwordNumberCols,
+          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
         ),
-        itemCount: Keyboards.passwordKeys.length + 1,
+        itemCount: Keyboards.passwordNumberKeys.length + 1,
         itemBuilder: (context, index) {
-          if (index < Keyboards.passwordKeys.length) {
+          if (index < Keyboards.passwordNumberKeys.length) {
             return GestureDetector(
               onTap: () {
                 if (state.password.length < passwordMaxLength) {
                   setState(() {
-                    state.appendToPassword(Keyboards.passwordKeys[index]);
+                    state.appendToPassword(Keyboards.passwordNumberKeys[index]);
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/3,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
+                width: MediaQuery.of(context).size.width/Keyboards.passwordNumberCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
-                  child: Text(Keyboards.passwordKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+                  child: Text(Keyboards.passwordNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
               ),
             );
@@ -400,8 +400,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/3,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
+                width: MediaQuery.of(context).size.width/Keyboards.passwordNumberCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
                   child: Container(
@@ -417,7 +417,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildLetterKeyboard () {
+  Widget buildPasswordLetterKeyboard () {
     return Container(
       height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
       width: MediaQuery.of(context).size.width,
@@ -425,25 +425,25 @@ class _LoginScreenState extends State<LoginScreen> {
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
+          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
         ),
-        itemCount: 28,
+        itemCount: Keyboards.passwordLetterKeys.length + 1,
         itemBuilder: (context, index) {
-          if (index < 27) {
+          if (index < Keyboards.passwordLetterKeys.length) {
             return GestureDetector(
               onTap: () {
                 if (state.password.length < passwordMaxLength) {
                   setState(() {
-                    state.appendToPassword(Keyboards.letterKeys[index]);
+                    state.appendToPassword(Keyboards.passwordLetterKeys[index]);
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/7,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
+                width: MediaQuery.of(context).size.width/Keyboards.passwordLetterCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
-                  child: Text(Keyboards.letterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+                  child: Text(Keyboards.passwordLetterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
               ),
             );
@@ -458,8 +458,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/4,
-                width: MediaQuery.of(context).size.width/7,
+                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
+                width: MediaQuery.of(context).size.width/Keyboards.passwordLetterCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
                   child: Container(
