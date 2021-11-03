@@ -12,7 +12,7 @@ class AgentManager {
         break;
       default:
         //utils.appManager.getSearchTags(context);
-        utils.appManager.toSearchPage(context, utils.pageNav);
+        utils.appManager.toBrowsePage(context, utils.pageNav);
     }
   }
 

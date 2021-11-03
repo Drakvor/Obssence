@@ -154,15 +154,15 @@ class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
         },
         onVerticalDragEnd: (DragEndDetails details) {
           if (overlayCont.value > 100) {
-            overlayCont.animateTo(220, duration: Duration(milliseconds: 200), curve: Curves.linear);
+            overlayCont.animateTo(220, duration: Duration(milliseconds: 100), curve: Curves.linear);
             utils.appManager.setAgentOff();
           }
           if (overlayCont.value <= 100) {
-            overlayCont.animateTo(20, duration: Duration(milliseconds: 200), curve: Curves.linear);
+            overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
           }
         },
         onVerticalDragCancel: () {
-          overlayCont.animateTo(20, duration: Duration(milliseconds: 200), curve: Curves.linear);
+          overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
         },
         child: Container(
           height: 220,
@@ -315,7 +315,7 @@ class _AgentMainState extends State<AgentMain> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () {
         if (!utils.appManager.agentOn){
-          overlayCont.animateTo(20, duration: Duration(milliseconds: 200), curve: Curves.linear);
+          overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
           utils.appManager.setAgentOn();
         }
       },

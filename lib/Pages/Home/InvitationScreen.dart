@@ -129,10 +129,10 @@ class _InvitationScreenState extends State<InvitationScreen> {
                       }
                     );
                     if (Platform.isAndroid) {
-                      await launch("sms:01065809860");
+                      await launch("sms:01065809860?body=초청합니다");
                     }
                     if (Platform.isIOS) {
-                      await launch("sms:01065809860");
+                      await launch("sms:01065809860;body=초청합니다");
                     }
                   },
                   text: "초대권 보내기",

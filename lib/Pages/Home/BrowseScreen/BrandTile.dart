@@ -90,8 +90,18 @@ class _BrandTileState extends State<BrandTile> {
 
   Widget getContents () {
     return Container(
-      child: Center(
-        child: Text(brand.name),
+      margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
+      child: Column(
+        children: [
+          Center(
+            child: Container(
+              child: Image.asset(utils.resourceManager.images.brandIntros[brand.name]!),
+            ),
+          ),
+          Center(
+            child: Text(brand.name),
+          ),
+        ],
       ),
     );
   }

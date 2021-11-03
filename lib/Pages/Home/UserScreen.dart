@@ -175,7 +175,7 @@ class _UserScreenState extends State<UserScreen> {
           margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CustomButton(
             whenPressed: () {
-              utils.appManager.toSearchPage(context, utils.pageNav);
+              utils.appManager.toBrowsePage(context, utils.pageNav);
             },
             text: "결제 수단",
             style: utils.resourceManager.textStyles.base14,

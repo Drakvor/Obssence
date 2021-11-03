@@ -80,7 +80,7 @@ class AppManager {
     loadCart = false;
   }
 
-  void toSearchPage (BuildContext context, GlobalKey<NavigatorState> nav, {List<String>? tags}) {
+  void toBrowsePage (BuildContext context, GlobalKey<NavigatorState> nav, {List<String>? tags}) {
     if (tags != null) {
       utils.agentManager.setSearchTags(tags);
     }

@@ -18,7 +18,7 @@ class PostPaymentScreen extends StatelessWidget {
   Widget buildScaffold (BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        utils.appManager.toSearchPage(context, utils.pageNav);
+        utils.appManager.toBrowsePage(context, utils.pageNav);
         return false;
       },
       child: Scaffold(
@@ -65,7 +65,7 @@ class PostPaymentScreen extends StatelessWidget {
             height: 40,
             child: CustomRoundButton(
               whenPressed: () {
-                utils.appManager.toSearchPage(context, utils.pageNav);
+                utils.appManager.toBrowsePage(context, utils.pageNav);
               },
               image: utils.resourceManager.images.backButton,
               imagePressed: utils.resourceManager.images.backButton,

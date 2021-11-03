@@ -38,4 +38,10 @@ class ImageRes {
     "black": _base + "Black.png",
     "grey": _base + "Grey.png",
   };
+
+  late Map<String, String> brandIntros = {
+    "Cucinelli": _base + "BrunelloCucinelli.png",
+    "Andre Maurice": _base + "AndreMaurice.png",
+    "Upcoming": _base + "Upcoming.png",
+  };
 }
