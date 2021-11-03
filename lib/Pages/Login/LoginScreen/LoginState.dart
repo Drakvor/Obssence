@@ -27,8 +27,12 @@ class LoginState {
     showPassword = !showPassword;
   }
 
-  void togglePhoneButton (int index) {
-    phoneButtonPressed[index] = !phoneButtonPressed[index];
+  void pressPhoneButton (int index) {
+    phoneButtonPressed[index] = true;
+  }
+
+  void unpressPhoneButton (int index) {
+    phoneButtonPressed[index] = false;
   }
 
   void nextState () {

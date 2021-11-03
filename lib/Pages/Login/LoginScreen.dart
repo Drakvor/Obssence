@@ -305,6 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
                   setState(() {
                     state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
+                    state.pressPhoneButton(index);
                   });
                 }
               },
@@ -312,6 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
                 width: MediaQuery.of(context).size.width/Keyboards.phoneNumberCols,
                 key: new UniqueKey(),
+                color: (state.phoneButtonPressed[index]) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
                 child: Center(
                   child: Text(Keyboards.phoneNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
