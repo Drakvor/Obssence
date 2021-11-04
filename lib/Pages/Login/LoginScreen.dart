@@ -356,7 +356,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (index < Keyboards.phoneNumberKeys.length) {
             return GestureDetector(
               onTapDown: (details) {
-                if (state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
+                if (state.phoneKeyboardActiveState && state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
                   setState(() {
                     state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
                     state.pressPhoneButton(index);

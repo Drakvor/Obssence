@@ -1,0 +1,62 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/Utils.dart';
+
+class KeyboardButton extends StatefulWidget {
+  const KeyboardButton({
+    Key? key,
+    this.whenPressed,
+    this.text="",
+    required this.style,
+    required this.h,
+    required this.w,
+  }) : super(key: key);
+
+  final VoidCallback? whenPressed;
+  final TextStyle style;
+  final String text;
+  final double h;
+  final double w;
+
+  @override
+  _KeyboardButtonState createState() => _KeyboardButtonState();
+}
+
+class _KeyboardButtonState extends State<KeyboardButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.whenPressed,
+      onTapDown: (TapDownDetails details) {
+        setState(() {
+          _pressed = true;
+        });
+      },
+      onTapUp: (TapUpDetails details) {
+        setState(() {
+          _pressed = false;
+        });
+      },
+      onTapCancel: () {
+        setState(() {
+          _pressed = false;
+        });
+      },
+      child: buildButton(context),
+    );
+  }
+
+  Widget buildButton (BuildContext context) {
+    return Container(
+      height: widget.h,
+      width: widget.w,
+      color: (_pressed) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
+      child: Center(
+        child: Text(widget.text, textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+      ),
+    );
+  }
+}
