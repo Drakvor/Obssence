@@ -4,13 +4,15 @@ import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 
 class KeyboardButton extends StatefulWidget {
-  const KeyboardButton({
+  KeyboardButton({
     Key? key,
     required this.whenPressed,
     required this.text,
     required this.style,
     required this.h,
     required this.w,
+    required this.isText,
+    required this.imageStr,
   }) : super(key: key);
 
   final void Function(String) whenPressed;
@@ -18,6 +20,8 @@ class KeyboardButton extends StatefulWidget {
   final String text;
   final double h;
   final double w;
+  final bool isText;
+  final String imageStr;
 
   @override
   _KeyboardButtonState createState() => _KeyboardButtonState();
@@ -52,6 +56,17 @@ class _KeyboardButtonState extends State<KeyboardButton> {
   }
 
   Widget buildButton (BuildContext context) {
+    return Container(
+      height: widget.h,
+      width: widget.w,
+      color: (_pressed) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
+      child: Center(
+        child: widget.isText? Text(widget.text, textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,) : Image.asset(widget.imageStr),
+      ),
+    );
+  }
+
+  Widget buildSpecialButton (BuildContext context) {
     return Container(
       height: widget.h,
       width: widget.w,

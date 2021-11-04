@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static int passwordLetterRows = 4;
   static int passwordLetterCols = 7;
 
+  final int phoneNumberMaxLength = 11;
   final int passwordNumNumbers = 4;
   final int passwordMaxLength = 5;
 
@@ -39,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool validNumber () {
     return (state.phoneNumber.length == phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
   }
-
 
   void clearPhoneNumber () {
     setState(() {
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: getCorrectPasswordKeyboard(),
+            child: buildPasswordKeyboard(),
           ),
         ],
       ),
@@ -414,143 +414,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildPhoneNumberKeyboard () {
     return Keyboard(
       characterSet: phoneNumberKeys,
-      functionSet: List<void Function(String)>.generate(
-          phoneNumberKeys.length,
-          (int index) => (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberKeys.length)? appendToPhoneNumber : (String string){return;}
-      ),
+      textFunction: (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberMaxLength)? appendToPhoneNumber : (String string){return;},
+      specialFunctions: [subtractFromPhoneNumber],
+      specialImageSet: [utils.resourceManager.images.backButton],
       numRows: phoneNumberRows,
       numCols: phoneNumberCols,
       style: utils.resourceManager.textStyles.base25,
     );
   }
 
-  Widget getCorrectPasswordKeyboard () {
-    if (state.password.length < passwordNumNumbers) {
-      return buildPasswordNumberKeyboard();
-    }
-    if (state.password.length == passwordNumNumbers || state.password.length == passwordMaxLength) {
-      return buildPasswordLetterKeyboard();
-    }
-    else {
-      return Container(
-        height: 400,
-      );
-    }
-  }
-
-  Widget buildPasswordNumberKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio,
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: passwordNumberCols,
-          mainAxisExtent: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
-        ),
-        itemCount: passwordNumberKeys.length + 1,
-        itemBuilder: (context, index) {
-          if (index < passwordNumberKeys.length) {
-            return GestureDetector(
-              onTap: () {
-                if (state.password.length < passwordMaxLength) {
-                  setState(() {
-                    appendToPassword(passwordNumberKeys[index]);
-                  });
-                }
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
-                width: MediaQuery.of(context).size.width/passwordNumberCols,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Text(passwordNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                if (state.password.length > 0) {
-                  setState(() {
-                    subtractFromPassword();
-                  });
-                }
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
-                width: MediaQuery.of(context).size.width/passwordNumberCols,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget buildPasswordLetterKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio,
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          mainAxisExtent: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
-        ),
-        itemCount: passwordLetterKeys.length + 1,
-        itemBuilder: (context, index) {
-          if (index < passwordLetterKeys.length) {
-            return GestureDetector(
-              onTap: () {
-                if (state.password.length < passwordMaxLength) {
-                  setState(() {
-                    appendToPassword(passwordLetterKeys[index]);
-                  });
-                }
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
-                width: MediaQuery.of(context).size.width/passwordLetterCols,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Text(passwordLetterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                if (state.password.length > 0) {
-                  setState(() {
-                    subtractFromPassword();
-                  });
-                }
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
-                width: MediaQuery.of(context).size.width/passwordLetterCols,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
+  Widget buildPasswordKeyboard () {
+    return Keyboard(
+      characterSet: (state.password.length < passwordNumNumbers)? passwordNumberKeys : passwordLetterKeys,
+      textFunction: (state.password.length < passwordMaxLength)? appendToPassword : (String string){return;},
+      specialFunctions: [subtractFromPassword],
+      specialImageSet: [utils.resourceManager.images.backButton],
+      numRows: (state.password.length < passwordNumNumbers)? passwordNumberRows : passwordLetterRows,
+      numCols: (state.password.length < passwordNumNumbers)? passwordNumberCols : passwordLetterCols,
+      style: utils.resourceManager.textStyles.base25,
     );
   }
 

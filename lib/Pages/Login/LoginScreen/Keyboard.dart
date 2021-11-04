@@ -1,32 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Widget/KeyboardButton.dart';
 
 class Keyboard extends StatelessWidget {
   Keyboard({
     Key? key,
     required this.characterSet,
-    required this.functionSet,
+    required this.textFunction,
+    required this.specialFunctions,
+    required this.specialImageSet,
     required this.numRows,
     required this.numCols,
     required this.style,
     this.widthHeightRatio = 2/3,
   }) :  totalButtons = numRows * numCols,
-        assert(characterSet.length == functionSet.length),
-        usableButtons = characterSet.length,
+        textButtons = characterSet.length,
+        assert(specialFunctions.length + characterSet.length == numRows * numCols),
         super(key: key,);
 
   final List<String> characterSet;
-  final List<void Function(String)> functionSet;
-  final TextStyle style;
+  final void Function(String) textFunction;
+  final List<void Function()> specialFunctions;
+  final List<String> specialImageSet;
   final int numRows;
   final int numCols;
+  final TextStyle style;
   final double widthHeightRatio;
   final int totalButtons;
-  final int usableButtons;
+  final int textButtons;
   late final double height;
   late final double width;
   late final double buttonHeight;
   late final double buttonWidth;
+
+  bool isTextButton(index) {
+    return index + 1 <= textButtons;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,23 +55,15 @@ class Keyboard extends StatelessWidget {
         ),
         itemCount: totalButtons,
         itemBuilder: (context, index) {
-          if (index + 1 <= usableButtons) {
-            return KeyboardButton(
-              whenPressed: functionSet[index],
-              text: characterSet[index],
-              style: style,
-              h: buttonHeight,
-              w: buttonWidth,
-            );
-          } else {
-            return KeyboardButton(
-              whenPressed: (String string){return;},
-              text: '',
-              style: style,
-              h: buttonHeight,
-              w: buttonWidth,
-            );
-          }
+          return KeyboardButton(
+            whenPressed: (isTextButton(index))? textFunction : (String string){return specialFunctions[index-textButtons]();},
+            text: (isTextButton(index))? characterSet[index] : '',
+            style: style,
+            h: buttonHeight,
+            w: buttonWidth,
+            isText: isTextButton(index),
+            imageStr: (isTextButton(index))? utils.resourceManager.images.roundButton : specialImageSet[index-textButtons],
+          );
         },
       ),
     );
