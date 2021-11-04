@@ -145,10 +145,10 @@ class _ReturnsListItemState extends State<ReturnsListItem> {
 
   Future<void> getImage () async {
     appImgDir = await getApplicationDocumentsDirectory();
-    image = File('${appImgDir.path}/' + returns.selection!.item!.id + "1");
+    image = File('${appImgDir.path}/' + returns.selection!.item!.id + "0");
     if (!image.existsSync()) {
       await FirebaseStorage.instance
-          .ref("Items/" + returns.selection!.item!.id + "/1.png")
+          .ref("Items/" + returns.selection!.item!.id + "/0.png")
           .writeToFile(image);
     }
   }

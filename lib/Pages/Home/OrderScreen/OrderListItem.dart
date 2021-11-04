@@ -140,10 +140,10 @@ class _OrderListItemState extends State<OrderListItem> {
 
   Future<void> getImage () async {
     appImgDir = await getApplicationDocumentsDirectory();
-    image = File('${appImgDir.path}/' + selection.item!.id + "1");
+    image = File('${appImgDir.path}/' + selection.item!.id + "0");
     if (!image.existsSync()) {
       await FirebaseStorage.instance
-          .ref("Items/" + selection.item!.id + "/1.png")
+          .ref("Items/" + selection.item!.id + "/0.png")
           .writeToFile(image);
     }
   }

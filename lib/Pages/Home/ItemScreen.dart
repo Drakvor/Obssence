@@ -98,6 +98,7 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
           child: GestureDetector(
             onTap: () {
               //do nothing (for real though)
+              overlayCont.animateTo(600, duration: Duration(milliseconds: 200), curve: Curves.linear);
             },
             child: buildCoverScreen(),
           ),
@@ -199,13 +200,6 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text("아이템 디테일", style: utils.resourceManager.textStyles.base14_700,),
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: getMaterials(),
-          ),
         ),
         Container(
           padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -420,30 +414,6 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         ],
       ),
     );
-  }
-
-  List<Widget> getMaterials () {
-    List<Widget> elements = [];
-    List listKeys = item.materials!.keys.toList();
-    for (int i = 0; i < listKeys.length; i++) {
-      String text = listKeys[i] + ": ";
-      List listSubKeys = item.materials![listKeys[i]].keys.toList();
-      for (int j = 0; j < listSubKeys.length; j++) {
-        if (j == 0) {
-          text = text + item.materials![listKeys[i]][listSubKeys[j]] + " " + listSubKeys[j];
-        }
-        else {
-          text = text + " / " + item.materials![listKeys[i]][listSubKeys[j]] + " " + listSubKeys[j];
-        }
-      }
-      elements.add(
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 2, 0, 2),
-          child: Text(text, style: utils.resourceManager.textStyles.base14_100,),
-        ),
-      );
-    }
-    return elements;
   }
 
   Widget buildCoverScreen () {

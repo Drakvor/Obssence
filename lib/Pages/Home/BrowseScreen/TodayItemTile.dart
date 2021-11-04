@@ -125,6 +125,7 @@ class _TodayItemTileState extends State<TodayItemTile> {
             width: MediaQuery.of(context).size.width,
             child: buildMain(),
           ),
+          /**
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
@@ -138,7 +139,7 @@ class _TodayItemTileState extends State<TodayItemTile> {
                 h: 22,
               ),
             ),
-          ),
+          ),**/
         ],
       ),
     );

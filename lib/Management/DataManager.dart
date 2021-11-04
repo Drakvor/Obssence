@@ -57,7 +57,7 @@ class DataManager {
   Future<void> getItemData () async {
     CollectionReference productsRef = FirebaseFirestore.instance.collection('items');
 
-    QuerySnapshot snapshot = await productsRef.orderBy("date").limit(10).get();
+    QuerySnapshot snapshot = await productsRef.orderBy("date").get();
     List<ItemData> itemList = [];
     for (int i = 0; i < snapshot.docs.length; i++) {
       ItemData newItem = ItemData(
@@ -68,7 +68,6 @@ class DataManager {
         descriptionLong: "",
         price: snapshot.docs[i]["price"],
         sku: snapshot.docs[i]["sku"],
-        materials: snapshot.docs[i]["materials"],
         madeIn: snapshot.docs[i]["madeIn"],
         saleID: snapshot.docs[i]["sale"],
         availableSizes: snapshot.docs[i]["sizes"].cast<String>(),

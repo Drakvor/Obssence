@@ -121,10 +121,10 @@ class _ItemSelectionListState extends State<ItemSelectionList> {
 
   Future<File> getImage (OrderItem selection) async {
     Directory appImgDir = await getApplicationDocumentsDirectory();
-    File image = File('${appImgDir.path}/' + selection.item!.id + "1");
+    File image = File('${appImgDir.path}/' + selection.item!.id + "0");
     if (!image.existsSync()) {
       await FirebaseStorage.instance
-          .ref("Items/" + selection.item!.id + "/1.png")
+          .ref("Items/" + selection.item!.id + "/0.png")
           .writeToFile(image);
     }
     return image;

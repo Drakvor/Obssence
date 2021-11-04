@@ -15,7 +15,6 @@ class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMix
   late final AnimationController overlayCont;
   late final TextEditingController textCont;
   bool buttonPressed = false;
-  bool textActive = false;
 
   void agentOff () {
     overlayCont.animateTo(220, duration: Duration(milliseconds: 200), curve: Curves.linear);
@@ -197,6 +196,7 @@ class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMix
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
+              utils.appManager.agentOff!();
             },
             child: Opacity(
               opacity: ((1-(overlayCont.value-20)/200)/2 >= 0) ? (1-(overlayCont.value-20)/200)/2 : 0,

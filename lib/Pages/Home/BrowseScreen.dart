@@ -150,9 +150,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
       ),
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       physics: NeverScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-      itemCount: utils.dataManager.items!.length,
+      itemCount: utils.dataManager.items!.length - 1,
       itemBuilder: (context, index) {
-        return BrowseItemTile(utils.dataManager.items![index]);
+        return BrowseItemTile(utils.dataManager.items![index + 1]);
       },
     );
   }

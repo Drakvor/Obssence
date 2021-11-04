@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboards.dart';
 import 'package:luxury_app_pre/Pages/Login/LoginScreen/LoginState.dart';
@@ -320,9 +321,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   await FirebaseAuth.instance.signInWithEmailAndPassword(email: state.phoneNumber + "@obssence.com", password: state.password + "0");
                   if (FirebaseAuth.instance.currentUser != null) {
                     utils.mainNav.currentState!.pushReplacement(
-                      MaterialPageRoute(builder: (context) {
-                        return HomePage();
-                      })
+                      CustomPageRoute(nextPage: HomePage()),
                     );
                   }
                 }

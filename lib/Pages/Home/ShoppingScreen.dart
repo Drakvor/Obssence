@@ -167,7 +167,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
           bottom: 0,
           left: 0,
           right: 0,
-          height: 100,
+          height: 98,
           child: buildPaymentButtons(),
         ),
         Positioned(
@@ -209,6 +209,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
           child: GestureDetector(
             onTap: () {
               //do nothing (for real though)
+              state.itemCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
             },
             child: buildCoverScreen(),
           ),

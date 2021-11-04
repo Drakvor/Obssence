@@ -121,7 +121,6 @@ class OrderItem {
       id: snapshot.id,
       name: snapshot["name"],
       brand: snapshot["brand"],
-      materials: snapshot["materials"],
       availableNumber: snapshot["availableNumber"],
       availableSizes: snapshot["sizes"].cast<String>(),
       price: snapshot["price"],
