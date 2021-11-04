@@ -6,14 +6,14 @@ import 'package:luxury_app_pre/Management/Utils.dart';
 class KeyboardButton extends StatefulWidget {
   const KeyboardButton({
     Key? key,
-    this.whenPressed,
-    this.text="",
+    required this.whenPressed,
+    required this.text,
     required this.style,
     required this.h,
     required this.w,
   }) : super(key: key);
 
-  final VoidCallback? whenPressed;
+  final void Function(String) whenPressed;
   final TextStyle style;
   final String text;
   final double h;
@@ -29,7 +29,9 @@ class _KeyboardButtonState extends State<KeyboardButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.whenPressed,
+      onTap: () {
+        widget.whenPressed(widget.text);
+      },
       onTapDown: (TapDownDetails details) {
         setState(() {
           _pressed = true;

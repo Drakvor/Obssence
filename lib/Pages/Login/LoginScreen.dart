@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
-import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboards.dart';
+import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboard.dart';
 import 'package:luxury_app_pre/Pages/Login/LoginScreen/LoginState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,13 +16,83 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static List<String> phoneNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
+  static List<String> passwordNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"];
+  static List<String> passwordLetterKeys = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", ""];
+
+  static int phoneNumberRows = 4;
+  static int phoneNumberCols = 3;
+
+  static int passwordNumberRows = 4;
+  static int passwordNumberCols = 3;
+
+  static int passwordLetterRows = 4;
+  static int passwordLetterCols = 7;
+
   final int passwordNumNumbers = 4;
   final int passwordMaxLength = 5;
+
+  final double keyboardWidthHeightRatio = 2/3;
 
   LoginState state = LoginState();
 
   bool validNumber () {
-    return (state.phoneNumber.length == Keyboards.phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+    return (state.phoneNumber.length == phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+  }
+
+
+  void clearPhoneNumber () {
+    setState(() {
+      state.phoneNumber = "";
+    });
+  }
+
+  void appendToPhoneNumber (String number) {
+    setState(() {
+      state.phoneNumber = state.phoneNumber + number;
+    });
+  }
+
+  void subtractFromPhoneNumber () {
+    setState(() {
+      state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
+    });
+  }
+
+  void appendToPassword (String character) {
+    setState(() {
+      state.password = state.password + character;
+    });
+  }
+
+  void subtractFromPassword () {
+    setState(() {
+      state.password = state.password.substring(0, state.password.length - 1);
+    });
+  }
+
+  void toggleShowPassword () {
+    setState(() {
+      state.showPassword = !state.showPassword;
+    });
+  }
+
+  void toggleActivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = !state.phoneKeyboardActiveState;
+    });
+  }
+
+  void setPhoneNumberError(bool value) {
+    setState(() {
+      state.phoneNumberError = value;
+    });
+  }
+
+  void nextState () {
+    setState(() {
+      state.state++;
+    });
   }
 
   @override
@@ -74,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: AnimatedCrossFade(
               duration: const Duration(milliseconds: 150),
               firstChild: buildPhoneNumberKeyboard(),
-              secondChild: Container(height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio),
+              secondChild: Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.width * keyboardWidthHeightRatio),
               crossFadeState: state.phoneKeyboardActiveState ? CrossFadeState.showFirst : CrossFadeState.showSecond,
             )
           ),
@@ -136,8 +206,8 @@ class _LoginScreenState extends State<LoginScreen> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    state.toggleActivatePhoneKeyboard();
-                    state.setPhoneNumberError(false);
+                    toggleActivatePhoneKeyboard();
+                    setPhoneNumberError(false);
                   });
                 },
                 child: Container(
@@ -242,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (!validNumber()) {
             utils.appManager.buildAlertDialog(context, "유효한 전화번호를 기입해 주세요.");
             setState(() {
-              state.setPhoneNumberError(true);
+              setPhoneNumberError(true);
             });
             return;
           }
@@ -253,8 +323,8 @@ class _LoginScreenState extends State<LoginScreen> {
             return;
           }
           setState(() {
-            state.nextState();
-            state.setPhoneNumberError(false);
+            nextState();
+            setPhoneNumberError(false);
           });
         },
         text: "확인",
@@ -270,8 +340,8 @@ class _LoginScreenState extends State<LoginScreen> {
       child: CustomButton(
         whenPressed: () async {
           setState(() {
-            state.clearPhoneNumber();
-            state.setPhoneNumberError(false);
+            clearPhoneNumber();
+            setPhoneNumberError(false);
           });
         },
         text: "Clear",
@@ -305,7 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
           GestureDetector(
             onTap: () {
               setState(() {
-                state.toggleShowPassword();
+                toggleShowPassword();
               });
             },
             child: state.showPassword ? buildPressed(context) : buildUnpressed(context),
@@ -342,76 +412,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildPhoneNumberKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: Keyboards.phoneNumberCols,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
-        ),
-        itemCount: Keyboards.phoneNumberKeys.length+1,
-        itemBuilder: (context, index) {
-          if (index < Keyboards.phoneNumberKeys.length) {
-            return GestureDetector(
-              onTapDown: (details) {
-                if (state.phoneKeyboardActiveState && state.phoneNumber.length < Keyboards.phoneNumberKeys.length) {
-                  setState(() {
-                    state.appendToPhoneNumber(Keyboards.phoneNumberKeys[index]);
-                    state.pressPhoneButton(index);
-                    state.setPhoneNumberError(false);
-                  });
-                }
-              },
-              onTapUp: (details) {
-                setState(() {
-                  state.unpressPhoneButton(index);
-                  state.setPhoneNumberError(false);
-                });
-              },
-              onTapCancel: () {
-                setState(() {
-                  state.unpressPhoneButton(index);
-                  state.setPhoneNumberError(false);
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
-                width: MediaQuery.of(context).size.width/Keyboards.phoneNumberCols,
-                key: new UniqueKey(),
-                color: (state.phoneButtonPressed[index]) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
-                child: Center(
-                  child: Text(Keyboards.phoneNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                if (state.phoneNumber.length > 0) {
-                  setState(() {
-                    state.subtractFromPhoneNumber();
-                    state.setPhoneNumberError(false);
-                  });
-                }
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.phoneNumberRows,
-                width: MediaQuery.of(context).size.width/Keyboards.phoneNumberCols,
-                key: new UniqueKey(),
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
+    return Keyboard(
+      characterSet: phoneNumberKeys,
+      functionSet: List<void Function(String)>.generate(
+          phoneNumberKeys.length,
+          (int index) => (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberKeys.length)? appendToPhoneNumber : (String string){return;}
       ),
+      numRows: phoneNumberRows,
+      numCols: phoneNumberCols,
+      style: utils.resourceManager.textStyles.base25,
     );
   }
 
@@ -431,31 +440,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildPasswordNumberKeyboard () {
     return Container(
-      height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
+      height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: Keyboards.passwordNumberCols,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
+          crossAxisCount: passwordNumberCols,
+          mainAxisExtent: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
         ),
-        itemCount: Keyboards.passwordNumberKeys.length + 1,
+        itemCount: passwordNumberKeys.length + 1,
         itemBuilder: (context, index) {
-          if (index < Keyboards.passwordNumberKeys.length) {
+          if (index < passwordNumberKeys.length) {
             return GestureDetector(
               onTap: () {
                 if (state.password.length < passwordMaxLength) {
                   setState(() {
-                    state.appendToPassword(Keyboards.passwordNumberKeys[index]);
+                    appendToPassword(passwordNumberKeys[index]);
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
-                width: MediaQuery.of(context).size.width/Keyboards.passwordNumberCols,
+                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
+                width: MediaQuery.of(context).size.width/passwordNumberCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
-                  child: Text(Keyboards.passwordNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+                  child: Text(passwordNumberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
               ),
             );
@@ -465,13 +474,13 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () {
                 if (state.password.length > 0) {
                   setState(() {
-                    state.subtractFromPassword();
+                    subtractFromPassword();
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordNumberRows,
-                width: MediaQuery.of(context).size.width/Keyboards.passwordNumberCols,
+                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordNumberRows,
+                width: MediaQuery.of(context).size.width/passwordNumberCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
                   child: Container(
@@ -489,31 +498,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildPasswordLetterKeyboard () {
     return Container(
-      height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio,
+      height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
-          mainAxisExtent: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
+          mainAxisExtent: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
         ),
-        itemCount: Keyboards.passwordLetterKeys.length + 1,
+        itemCount: passwordLetterKeys.length + 1,
         itemBuilder: (context, index) {
-          if (index < Keyboards.passwordLetterKeys.length) {
+          if (index < passwordLetterKeys.length) {
             return GestureDetector(
               onTap: () {
                 if (state.password.length < passwordMaxLength) {
                   setState(() {
-                    state.appendToPassword(Keyboards.passwordLetterKeys[index]);
+                    appendToPassword(passwordLetterKeys[index]);
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
-                width: MediaQuery.of(context).size.width/Keyboards.passwordLetterCols,
+                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
+                width: MediaQuery.of(context).size.width/passwordLetterCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
-                  child: Text(Keyboards.passwordLetterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+                  child: Text(passwordLetterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
                 ),
               ),
             );
@@ -523,13 +532,13 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () {
                 if (state.password.length > 0) {
                   setState(() {
-                    state.subtractFromPassword();
+                    subtractFromPassword();
                   });
                 }
               },
               child: Container(
-                height: MediaQuery.of(context).size.width*Keyboards.keyboardWidthHeightRatio/Keyboards.passwordLetterRows,
-                width: MediaQuery.of(context).size.width/Keyboards.passwordLetterCols,
+                height: MediaQuery.of(context).size.width*keyboardWidthHeightRatio/passwordLetterRows,
+                width: MediaQuery.of(context).size.width/passwordLetterCols,
                 color: utils.resourceManager.colours.almostBackground,
                 child: Center(
                   child: Container(
