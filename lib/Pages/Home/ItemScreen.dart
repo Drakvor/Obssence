@@ -138,11 +138,11 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
       child: Stack(
         children: [
           Container(
-              child: PageView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                children: getPages(),
-              )
+            child: PageView(
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              children: getPages(),
+            ),
           ),
           Positioned(
             right: 5,
@@ -156,7 +156,14 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
   List<Widget> getPages () {
     List<Widget> pages = [];
     for (int i = 0; i < images.length; i++) {
-      pages.add(CustomImage(images[i]));
+      pages.add(
+        GestureDetector(
+          onTap: () {
+            utils.appManager.toImagePage(context, utils.pageNav, images[i]);
+          },
+          child: CustomImage(images[i]),
+        ),
+      );
       //pages.add(Container(color: Color(0xffff9999),));
     }
     return pages;
