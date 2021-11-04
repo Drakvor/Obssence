@@ -9,6 +9,7 @@ import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Pages/Home/BrandScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen.dart';
 import 'package:luxury_app_pre/Data/Item.dart';
+import 'package:luxury_app_pre/Pages/Home/ImageScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/InvitationScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ItemScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/OrderDetailsScreen.dart';
@@ -100,6 +101,12 @@ class AppManager {
   void toItemPage (BuildContext context, GlobalKey<NavigatorState> nav, ItemData data, List<File> images, {bool editing=false}) {
     nav.currentState!.push(
       CustomPageRoute(nextPage: ItemScreen(data, images, editing: editing,)),
+    );
+  }
+
+  void toImagePage (BuildContext context, GlobalKey<NavigatorState> nav, File image) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: ImageScreen(image)),
     );
   }
 
