@@ -114,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+
   Widget getPhoneNumber () {
     return Container(
       child: Column(
@@ -192,6 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 
   Widget buildPhoneNumberTextField () {
     return Container(
@@ -305,7 +307,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildPhoneNumberConfirm () {
+
+  Widget buildPhoneNumberConfirmButton () {
     return Container(
       child: CustomButton(
         whenPressed: () async {
@@ -335,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildPhoneNumberClear () {
+  Widget buildPhoneNumberClearButton () {
     return Container(
       child: CustomButton(
         whenPressed: () async {
@@ -357,11 +360,11 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildPhoneNumberClear(),
+          buildPhoneNumberClearButton(),
           Container(
             width: 20,
           ),
-          buildPhoneNumberConfirm(),
+          buildPhoneNumberConfirmButton(),
         ]
       )
     );
@@ -411,6 +414,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+
   Widget buildPhoneNumberKeyboard () {
     return Keyboard(
       characterSet: phoneNumberKeys,
@@ -434,6 +438,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: utils.resourceManager.textStyles.base25,
     );
   }
+
 
   Widget buildUnpressed (BuildContext context) {
     return Container(
@@ -510,6 +515,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 
   Widget backButton () {
     return Container(

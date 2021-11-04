@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
+import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboard.dart';
 import 'package:luxury_app_pre/Pages/Login/SignUpScreen/SignUpState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Pages/HomePage.dart';
@@ -17,9 +18,86 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   SignUpState state = SignUpState();
-  List<String> numberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
-  List<String> passwordKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"];
-  List<String> letterKeys = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", ""];
+  List<String> phoneNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
+  List<String> passwordNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"];
+  List<String> passwordLetterKeys = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", ""];
+
+  static int phoneNumberRows = 4;
+  static int phoneNumberCols = 3;
+
+  static int passwordNumberRows = 4;
+  static int passwordNumberCols = 3;
+
+  static int passwordLetterRows = 4;
+  static int passwordLetterCols = 7;
+
+  final int phoneNumberMaxLength = 11;
+  final int passwordNumNumbers = 4;
+  final int passwordMaxLength = 5;
+
+  final double keyboardWidthHeightRatio = 2/3;
+
+  bool validNumber () {
+    return (state.phoneNumber.length == phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+  }
+
+  void clearPhoneNumber () {
+    setState(() {
+      state.phoneNumber = "";
+    });
+  }
+
+  void appendToPhoneNumber (String number) {
+    setState(() {
+      state.phoneNumber = state.phoneNumber + number;
+    });
+  }
+
+  void subtractFromPhoneNumber () {
+    setState(() {
+      state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
+    });
+  }
+
+  void appendToPassword (String character) {
+    setState(() {
+      state.currentPassword = state.currentPassword + character;
+    });
+  }
+
+  void subtractFromPassword () {
+    setState(() {
+      state.currentPassword = state.currentPassword.substring(0, state.currentPassword.length - 1);
+    });
+  }
+
+  void setShowPassword (bool value) {
+    setState(() {
+      state.showPassword = value;
+    });
+  }
+
+  void toggleShowPassword (){
+    setShowPassword(!state.showPassword);
+  }
+
+  void toggleActivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = !state.phoneKeyboardActiveState;
+    });
+  }
+
+  void setPhoneNumberError(bool value) {
+    setState(() {
+      state.phoneNumberError = value;
+    });
+  }
+
+  void nextState () {
+    setState(() {
+      state.state++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +120,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget buildContent () {
     if (state.state == 0) {
-      return getNumber();
+      return getPhoneNumber();
     }
-    else if (state.state == 1) {
+    else if (state.state == 1 || state.state == 2) {
       return getPassword();
-    }
-    else if (state.state == 2) {
-      return getPasswordConfirm();
     }
     return Container();
   }
 
-  Widget getNumber () {
+
+  Widget getPhoneNumber () {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -69,19 +145,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberField(),
+            child: buildPhoneNumberTextField(),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberConfirm(),
+            child: buildPhoneNumberButtons(),
           ),
           Expanded(
             flex: 1,
             child: Container(),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildNumberKeyboard(),
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: AnimatedCrossFade(
+                duration: const Duration(milliseconds: 150),
+                firstChild: buildPhoneNumberKeyboard(),
+                secondChild: Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.width * keyboardWidthHeightRatio),
+                crossFadeState: state.phoneKeyboardActiveState ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+              )
           ),
         ],
       ),
@@ -100,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 5),
-            child: Text("OBSSENCE에서 사용할 비밀번호를 입력해 주세요.", style: utils.resourceManager.textStyles.base15_700),
+            child:  Text((state.state == 1)? "OBSSENCE에서 사용할 비밀번호를 입력해 주세요." : "비밀번호를 재입력해 주세요.", style: utils.resourceManager.textStyles.base15_700),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 5, 0, 20),
@@ -108,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildPasswordField(),
+            child: buildPasswordTextField(),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -120,53 +201,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: getCorrectKeyboard(),
+            child: buildPasswordKeyboard(),
           ),
         ],
       ),
     );
   }
 
-  Widget getPasswordConfirm () {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 20, 0, 5),
-            child: Text("비밀번호를 재입력해 주세요.", style: utils.resourceManager.textStyles.base15_700),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 5, 0, 20),
-            child: Text("숫자 4자리 + 영문자 1자리", style: utils.resourceManager.textStyles.base15),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildPasswordConfirmField(),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: buildPasswordConfirmButtons(),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-            child: getCorrectConfirmKeyboard(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildNumberField () {
+  Widget buildPhoneNumberTextField () {
     return Container(
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -176,11 +218,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
           width: (MediaQuery.of(context).size.width < 299) ? MediaQuery.of(context).size.width - 10 : 343,
           child: Stack(
             children: [
-              Container(
-                child: Center(
-                  child: Image.asset(utils.resourceManager.images.phoneNumberField),
+
+
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    toggleActivatePhoneKeyboard();
+                    setPhoneNumberError(false);
+                  });
+                },
+                child: Container(
+                  child: Center(
+                    child: Image.asset(utils.resourceManager.images.phoneNumberFieldInactive),
+                  ),
                 ),
               ),
+
               Positioned(
                 top: 0,
                 bottom: 0,
@@ -226,88 +279,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget buildPasswordField () {
+  Widget buildPasswordTextField () {
     return Container(
       height: 100,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: (state.showPassword) ?
         [
-        Container(
-          width: 50,
-        ),
-        (state.password.length > 0) ? Container(width: 20, child: Text(state.password.substring(0, 1), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.password.length > 1) ? Container(width: 20, child: Text(state.password.substring(1, 2), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.password.length > 2) ? Container(width: 20, child: Text(state.password.substring(2, 3), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.password.length > 3) ? Container(width: 20, child: Text(state.password.substring(3, 4), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        Container(),
-        (state.password.length > 4) ? Container(width: 20, child: Text(state.password.substring(4, 5), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        Container(
-          width: 50,
-        ),
+          Container(
+            width: 50,
+          ),
+          (state.currentPassword.length > 0) ? Container(width: 20, child: Text(state.currentPassword.substring(0, 1), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 1) ? Container(width: 20, child: Text(state.currentPassword.substring(1, 2), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 2) ? Container(width: 20, child: Text(state.currentPassword.substring(2, 3), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 3) ? Container(width: 20, child: Text(state.currentPassword.substring(3, 4), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          Container(),
+          (state.currentPassword.length > 4) ? Container(width: 20, child: Text(state.currentPassword.substring(4, 5), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          Container(
+            width: 50,
+          ),
         ] :
         [
-        Container(
-        width: 50,
+          Container(
+            width: 50,
+          ),
+          (state.currentPassword.length > 0) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 1) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 2) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 3) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          Container(),
+          (state.currentPassword.length > 4) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          Container(
+            width: 50,
+          ),
+        ],
       ),
-      (state.password.length > 0) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.password.length > 1) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.password.length > 2) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.password.length > 3) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      Container(),
-      (state.password.length > 4) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      Container(
-        width: 50,
-      ),
-      ],
-    ),
     );
   }
 
-  Widget buildPasswordConfirmField () {
-    return Container(
-      height: 100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: (state.showPassword) ?
-        [
-        Container(
-          width: 50,
-        ),
-        (state.passwordConfirm.length > 0) ? Text(state.passwordConfirm.substring(0, 1)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.passwordConfirm.length > 1) ? Text(state.passwordConfirm.substring(1, 2)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.passwordConfirm.length > 2) ? Text(state.passwordConfirm.substring(2, 3)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        (state.passwordConfirm.length > 3) ? Text(state.passwordConfirm.substring(3, 4)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        Container(),
-        (state.passwordConfirm.length > 4) ? Text(state.passwordConfirm.substring(4, 5)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-        Container(
-          width: 50,
-        ),
-        ] :
-        [
-        Container(
-        width: 50,
-      ),
-      (state.passwordConfirm.length > 0) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.passwordConfirm.length > 1) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.passwordConfirm.length > 2) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      (state.passwordConfirm.length > 3) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      Container(),
-      (state.passwordConfirm.length > 4) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-      Container(
-        width: 50,
-      ),
-      ],
-    ),
-    );
-  }
-
-  Widget buildNumberConfirm () {
+  Widget buildPhoneNumberConfirmButton () {
     return Container(
       child: CustomButton(
         whenPressed: () async {
           CollectionReference invitations = FirebaseFirestore.instance.collection("invitations");
-          if (!state.validNumber()) {
+          if (!validNumber()) {
             utils.appManager.buildAlertDialog(context, "유효한 전화번호를 기입해 주세요.");
             return;
           }
@@ -323,15 +338,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
             print("no invitation");
             return;
           }
-          setState(() {
-            state.nextState();
-          });
+          nextState();
         },
         text: "확인",
         style: utils.resourceManager.textStyles.base14,
         h: 25,
         w: 100,
       ),
+    );
+  }
+
+  Widget buildPhoneNumberClearButton () {
+    return Container(
+      child: CustomButton(
+        whenPressed: () async {
+          setState(() {
+            clearPhoneNumber();
+            setPhoneNumberError(false);
+          });
+        },
+        text: "Clear",
+        style: utils.resourceManager.textStyles.base14,
+        h: 30,
+        w: 50,
+      ),
+    );
+  }
+
+  Widget buildPhoneNumberButtons () {
+    return Container(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildPhoneNumberClearButton(),
+              Container(
+                width: 20,
+              ),
+              buildPhoneNumberConfirmButton(),
+            ]
+        )
     );
   }
 
@@ -342,9 +387,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              setState(() {
-                state.togglePassword();
-              });
+              toggleShowPassword();
             },
             child: state.showPassword ? buildPressed(context) : buildUnpressed(context),
           ),
@@ -353,18 +396,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
             margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: CustomButton(
               whenPressed: () async {
-                if (state.password.length == 5) {
-                  setState(() {
-                    state.hidePassword();
-                    state.nextState();
-                  });
+                if (state.currentPassword.length == 5) {
+                  if (state.state == 1) {
+                    setShowPassword(false);
+                    nextState();
+                    state.finalisedPassword = state.currentPassword;
+                    state.currentPassword = "";
+                  } else if (state.state == 2){
+                    if (state.currentPassword == state.finalisedPassword) {
+                      try {
+                        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: state.phoneNumber + "@obssence.com", password: state.currentPassword + "0");
+                        if (FirebaseAuth.instance.currentUser != null) {
+                          CollectionReference users = FirebaseFirestore.instance.collection('users');
+                          await users.add(
+                              {
+                                "uid": FirebaseAuth.instance.currentUser!.uid,
+                                "phoneNumber": state.phoneNumber,
+                                "firstName": "Bob",
+                                "lastName": "Builder",
+                                "notifications": "false",
+                                "invitations": 1,
+                              }
+                          );
+                          utils.mainNav.currentState!.pushReplacement(
+                              MaterialPageRoute(builder: (context) {
+                                return HomePage();
+                              })
+                          );
+                        }
+                      }
+                      catch (e) {
+                        utils.appManager.buildAlertDialog(context, "회원가입이 실패했습니다.");
+                        print(e);
+                      }
+                    }
+                    else {
+                      utils.appManager.buildAlertDialog(context, "비밀번호가 같지 않습니다.");
+                    }
+                  }
                 }
                 else {
                   utils.appManager.buildAlertDialog(context, "유효한 비밀번호를 기입해 주세요.");
                   //do nothing
                 }
               },
-              text: "확인",
+              text: (state.state==1)? "확인" : "가입하기",
               style: utils.resourceManager.textStyles.base14,
               h: 25,
               w: 100,
@@ -375,283 +451,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget buildPasswordConfirmButtons () {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                state.togglePassword();
-              });
-            },
-            child: state.showPassword ? buildPressed(context) : buildUnpressed(context),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: CustomButton(
-              whenPressed: () async {
-                if (state.password == state.passwordConfirm) {
-                  try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: state.phoneNumber + "@obssence.com", password: state.password + "0");
-                    if (FirebaseAuth.instance.currentUser != null) {
-                      CollectionReference users = FirebaseFirestore.instance.collection('users');
-                      await users.add(
-                        {
-                          "uid": FirebaseAuth.instance.currentUser!.uid,
-                          "phoneNumber": state.phoneNumber,
-                          "firstName": "Bob",
-                          "lastName": "Builder",
-                          "notifications": "false",
-                          "invitations": 1,
-                        }
-                      );
-                      utils.mainNav.currentState!.pushReplacement(
-                          MaterialPageRoute(builder: (context) {
-                            return HomePage();
-                          })
-                      );
-                    }
-                  }
-                  catch (e) {
-                    utils.appManager.buildAlertDialog(context, "회원가입이 실패했습니다.");
-                    print(e);
-                  }
-                }
-                else {
-                  utils.appManager.buildAlertDialog(context, "비밀번호가 같지 않습니다.");
-                }
-              },
-              text: "가입하기",
-              style: utils.resourceManager.textStyles.base14,
-              h: 25,
-              w: 100,
-            ),
-          ),
-        ],
-      ),
+  Widget buildPhoneNumberKeyboard () {
+    return Keyboard(
+      characterSet: phoneNumberKeys,
+      textFunction: (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberMaxLength)? appendToPhoneNumber : (String string){return;},
+      specialFunctions: [subtractFromPhoneNumber],
+      specialImageSet: [utils.resourceManager.images.backButton],
+      numRows: phoneNumberRows,
+      numCols: phoneNumberCols,
+      style: utils.resourceManager.textStyles.base25,
     );
-  }
-
-  Widget buildNumberKeyboard () {
-    return Container(height: MediaQuery.of(context).size.width*(2/3),
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent: MediaQuery.of(context).size.width*(2/3)/4,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          if (index < 11) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  state.appendNumber(numberKeys[index]);
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                decoration: BoxDecoration(
-                    color: utils.resourceManager.colours.almostBackground,
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                child: Center(
-                  child: Text(numberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  state.subtractNumber();
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                decoration: BoxDecoration(
-                    color: utils.resourceManager.colours.almostBackground,
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget getCorrectKeyboard () {
-    if (state.password.length < 4) {
-      return buildPasswordKeyboard();
-    }
-    if (state.password.length == 4 || state.password.length == 5) {
-      return buildLetterKeyboard();
-    }
-    else {
-      return Container(
-        height: 400,
-      );
-    }
-  }
-
-  Widget getCorrectConfirmKeyboard () {
-    if (state.passwordConfirm.length < 4) {
-      return buildPasswordKeyboard();
-    }
-    if (state.passwordConfirm.length == 4 || state.passwordConfirm.length == 5) {
-      return buildLetterKeyboard();
-    }
-    else {
-      return Container(
-        height: 400,
-      );
-    }
   }
 
   Widget buildPasswordKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*(2/3),
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent: MediaQuery.of(context).size.width*(2/3)/4,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          if (index < 11) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (state.state == 1){
-                    state.appendPassword(passwordKeys[index]);
-                  }
-                  else {
-                    state.appendPasswordConfirm(passwordKeys[index]);
-                  }
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                decoration: BoxDecoration(
-                    color: utils.resourceManager.colours.almostBackground,
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                child: Center(
-                  child: Text(passwordKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (state.state == 1) {
-                    state.subtractPassword();
-                  }
-                  else {
-                    state.subtractPasswordConfirm();
-                  }
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                decoration: BoxDecoration(
-                    color: utils.resourceManager.colours.almostBackground,
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget buildLetterKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*(2/3),
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          mainAxisExtent: MediaQuery.of(context).size.width*(2/3)/4,
-        ),
-        itemCount: 28,
-        itemBuilder: (context, index) {
-          if (index < 27) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (state.state == 1) {
-                    state.appendPassword(letterKeys[index]);
-                  }
-                  else {
-                    state.appendPasswordConfirm(letterKeys[index]);
-                  }
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/7,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Text(letterKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (state.state == 1) {
-                    state.subtractPassword();
-                  }
-                  else {
-                    state.subtractPasswordConfirm();
-                  }
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/7,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
+    return Keyboard(
+      characterSet: (state.currentPassword.length < passwordNumNumbers)? passwordNumberKeys : passwordLetterKeys,
+      textFunction: (state.currentPassword.length < passwordMaxLength)? appendToPassword : (String string){return;},
+      specialFunctions: [subtractFromPassword],
+      specialImageSet: [utils.resourceManager.images.backButton],
+      numRows: (state.currentPassword.length < passwordNumNumbers)? passwordNumberRows : passwordLetterRows,
+      numCols: (state.currentPassword.length < passwordNumNumbers)? passwordNumberCols : passwordLetterCols,
+      style: utils.resourceManager.textStyles.base25,
     );
   }
 
@@ -730,6 +550,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
 
   Widget backButton () {
     return Container(
