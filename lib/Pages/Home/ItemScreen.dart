@@ -370,7 +370,6 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
-      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -381,8 +380,8 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
             },
             image: utils.resourceManager.images.backButton,
             imagePressed: utils.resourceManager.images.backButton,
-            h: 40,
-            w: 40,
+            h: 50,
+            w: 50,
           ),
           (utils.appManager.loggedIn) ? Container(
             key: Key("CartButton" + _updatedCount),
@@ -392,8 +391,8 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
               },
               text: _updatedCount,
               style: utils.resourceManager.textStyles.dots,
-              h: 40,
-              w: 40,
+              h: 50,
+              w: 50,
             ),
           ) : Container(),
         ],

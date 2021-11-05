@@ -84,18 +84,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
           ),
           Positioned(
-            left: 5,
-            top: 5,
-            height: 40,
-            width: 40,
+            left: 0,
+            top: 0,
+            height: 50,
+            width: 50,
             child: CustomRoundButton(
               whenPressed: () {
                 utils.appManager.previousPage(utils.pageNav);
               },
               image: utils.resourceManager.images.backButton,
               imagePressed: utils.resourceManager.images.backButton,
-              h: 40,
-              w: 40,
+              h: 50,
+              w: 50,
             ),
           ),
         ],
@@ -366,7 +366,40 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: CustomButton(
-        whenPressed: () {
+        whenPressed: () async {
+          utils.dataManager.postOrder(utils.dataManager.user!.cart.listSelections); //To E-count
+          //And now to Firebase
+          CollectionReference orders = FirebaseFirestore.instance.collection('orders');
+          CollectionReference selections = FirebaseFirestore.instance.collection('selections');
+          List items = [];
+          for (int i = 0; i < utils.dataManager.user!.cart.listSelections.length; i++) {
+            items.add(utils.dataManager.user!.cart.listSelections[i].id);
+          }
+          DocumentReference snapshot = await orders.add(
+              {
+                "user": utils.dataManager.user!.id,
+                "orderDate": DateTime.now().year * 10000 + DateTime.now().month * 100 + DateTime.now().day,
+                "orderStatus": "submitted",
+                "returns": [],
+                "items": items,
+                "trackingId": "",
+                "oid": "21102101",
+              }
+          );
+          await orders.doc(snapshot.id).update(
+              {
+                "id": snapshot.id,
+              }
+          );
+          for (int i = 0; i < utils.dataManager.user!.cart.listSelections.length; i++) {
+            await selections.doc(utils.dataManager.user!.cart.listSelections[i].id).update(
+                {
+                  "parent": snapshot.id,
+                }
+            );
+          }
+          //And finally, the application code?
+          await utils.dataManager.getUserData();
           utils.appManager.toPostPaymentPage(context, utils.pageNav, {"Hi": "Hi"});
         },
         text: "결제",
@@ -438,6 +471,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
               }
             );
           }
+          //And finally, the application code?
+          await utils.dataManager.getUserData();
         }
         //move to next page
       },

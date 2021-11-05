@@ -244,18 +244,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
             ),
           ),
           Positioned(
-            left: 5,
-            top: 5,
-            height: 40,
-            width: 40,
+            left: 0,
+            top: 0,
+            height: 50,
+            width: 50,
             child: CustomRoundButton(
               whenPressed: () {
                 utils.appManager.previousPage(utils.pageNav);
               },
               image: utils.resourceManager.images.backButton,
               imagePressed: utils.resourceManager.images.backButton,
-              h: 40,
-              w: 40,
+              h: 50,
+              w: 50,
             ),
           ),
         ],

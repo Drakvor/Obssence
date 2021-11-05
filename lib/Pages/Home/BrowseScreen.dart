@@ -159,9 +159,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   Widget buildButtons (BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
       width: MediaQuery.of(context).size.width,
-      height: 40,
+      height: 50,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -176,8 +175,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
                   },
                   text: value,
                   style: utils.resourceManager.textStyles.dots,
-                  w: 40,
-                  h: 40,
+                  w: 50,
+                  h: 50,
                 ),
               );
             },

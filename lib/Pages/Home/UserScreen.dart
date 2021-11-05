@@ -87,18 +87,18 @@ class _UserScreenState extends State<UserScreen> {
                 ),
               ),
               Positioned(
-                left: 5,
-                top: 5,
-                width: 40,
-                height: 40,
+                left: 0,
+                top: 0,
+                width: 50,
+                height: 50,
                 child: CustomRoundButton(
                   whenPressed: () {
                     utils.appManager.previousPage(utils.pageNav);
                   },
                   image: utils.resourceManager.images.backButton,
                   imagePressed: utils.resourceManager.images.backButton,
-                  h: 40,
-                  w: 40,
+                  h: 50,
+                  w: 50,
                 ),
               ),
             ],

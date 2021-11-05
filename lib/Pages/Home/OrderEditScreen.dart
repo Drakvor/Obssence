@@ -1,11 +1,15 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
+import 'package:luxury_app_pre/Pages/Home/OrderDetailsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/OrderEditScreen/OrderEditState.dart';
+import 'package:luxury_app_pre/Pages/Home/UserScreen.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Pages/Home/OrderEditScreen/ItemSelectionList.dart';
 import 'package:luxury_app_pre/Pages/Home/OrderEditScreen/ReasonSelectionList.dart';
@@ -113,18 +117,18 @@ class _OrderEditScreenState extends State<OrderEditScreen> {
             ),
           ),
           Positioned(
-            left: 5,
-            top: 5,
-            width: 40,
-            height: 40,
+            left: 0,
+            top: 0,
+            width: 50,
+            height: 50,
             child: CustomRoundButton(
               whenPressed: () {
                 utils.appManager.previousPage(utils.pageNav);
               },
               image: utils.resourceManager.images.backButton,
               imagePressed: utils.resourceManager.images.backButton,
-              h: 40,
-              w: 40,
+              h: 50,
+              w: 50,
             ),
           ),
           Positioned(
@@ -215,8 +219,54 @@ class _OrderEditScreenState extends State<OrderEditScreen> {
         margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
         key: Key("submitButton"),
         child: CustomButton(
-          whenPressed: () {
+          whenPressed: () async {
+            CollectionReference returnsRef = FirebaseFirestore.instance.collection('returns');
+            CollectionReference selectionsRef = FirebaseFirestore.instance.collection('selections');
+            CollectionReference ordersRef = FirebaseFirestore.instance.collection('orders');
 
+            DocumentReference snapshot = await returnsRef.add(
+              {
+                "oid": order.oid,
+                "user": utils.dataManager.user!.id,
+                "reason": state.reason,
+                "parent": order.id,
+                "returnDate": DateTime.now().year * 10000 + DateTime.now().month * 100 + DateTime.now().day,
+                "status": "",
+              }
+            );
+            await returnsRef.doc(snapshot.id).update(
+              {
+                "id": snapshot.id,
+              }
+            );
+            await selectionsRef.doc(state.selection!.id).update(
+              {
+                "parent": snapshot.id,
+              }
+            );
+
+            order.addReturnData(
+              ReturnData(
+                id: snapshot.id,
+                oid: order.oid,
+                selection: state.selection,
+                reason: state.reason,
+                returnDate: DateTime.now().year * 10000 + DateTime.now().month * 100 + DateTime.now().day,
+              ),
+            );
+            order.removeOrderItem(state.selection!);
+
+            await ordersRef.doc(order.id).update(
+                {
+                  "items": order.selectionIds,
+                  "returns": order.returnIds,
+                }
+            );
+
+            utils.appManager.buildAlertDialog(context, "반품, 교환 요청 완료");
+            utils.pageNav.currentState!.pushReplacement(
+              CustomPageRoute(nextPage: UserScreen()),
+            );
           },
           text: "신청하기",
           style: utils.resourceManager.textStyles.base,

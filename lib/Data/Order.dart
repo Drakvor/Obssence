@@ -47,6 +47,11 @@ class OrderData {
     selections!.add(data);
   }
 
+  void removeOrderItem (OrderItem data) {
+    selections?.remove(data);
+    selectionIds?.remove(data.id);
+  }
+
   void setItemIDs (List<String> data) {
     selectionIds = data;
   }
@@ -59,7 +64,11 @@ class OrderData {
     if (returns == null) {
       returns = [];
     }
+    if (returnIds == null) {
+      returnIds = [];
+    }
     returns!.add(data);
+    returnIds!.add(data.id);
   }
 
   void setReturnIDs (List<String> data) {
