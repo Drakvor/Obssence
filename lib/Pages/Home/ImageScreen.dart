@@ -24,6 +24,9 @@ class _ImageScreenState extends State<ImageScreen> {
             color: utils.resourceManager.colours.background,
         ),
         imageProvider: Image.file(image,).image,
+        initialScale: PhotoViewComputedScale.contained,
+        minScale: PhotoViewComputedScale.contained * 1.0,
+        maxScale: PhotoViewComputedScale.contained * 5,
       )
     );
   }
