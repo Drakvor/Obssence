@@ -15,6 +15,7 @@ import 'package:luxury_app_pre/Widget/CustomInnerShadow.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundTextButton.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen/BrandTile.dart';
+import 'package:luxury_app_pre/Widget/SearchBar.dart';
 //import 'package:luxury_app_pre/Widget/CustomScrollIndicator.dart';
 
 class BrowseScreen extends StatefulWidget {
@@ -80,12 +81,18 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Widget buildColumn (BuildContext context) {
+
+    print("got here");
     return ListView(
       physics: BouncingScrollPhysics(),
       children: [
         Container(
           margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Text("브랜드 라인업", style: utils.resourceManager.textStyles.base18_100,),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+          child: SearchBar(),
         ),
         Container(
           height: MediaQuery.of(context).size.width*(2/3),
