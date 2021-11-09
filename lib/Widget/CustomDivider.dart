@@ -157,3 +157,79 @@ class CustomDottedDividerLong extends StatelessWidget {
   }
 }
 
+class CustomCrossDivider extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return Container(
+      height: 10,
+      width: width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: width - 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: getDots(width),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> getDots (double w) {
+    List<Widget> dots = [];
+    for (int i = 0; i < 2; i++) {
+      dots.add(
+        Container(
+          height: 10,
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Image.asset(utils.resourceManager.images.cross),
+        ),
+      );
+    }
+    return dots;
+  }
+}
+
+class CustomThreeCrossDivider extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return Container(
+      height: 10,
+      width: width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: width - 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: getDots(width),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> getDots (double w) {
+    List<Widget> dots = [];
+    for (int i = 0; i < 3; i++) {
+      dots.add(
+        Container(
+          height: 10,
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Image.asset(utils.resourceManager.images.cross),
+        ),
+      );
+    }
+    return dots;
+  }
+}
+

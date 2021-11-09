@@ -106,18 +106,34 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   }
 
   Widget mainColumn () {
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: utils.dataManager.user!.returns.listReturns.length,
-      itemBuilder: (context, index) {
-        return Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: getSelections(utils.dataManager.user!.returns.listReturns[index]),
-          ),
-        );
-      },
-    );
+    if (utils.dataManager.user!.returns.listReturns.length > 0) {
+      return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: utils.dataManager.user!.returns.listReturns.length,
+        itemBuilder: (context, index) {
+          return Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: getSelections(utils.dataManager.user!.returns.listReturns[index]),
+            ),
+          );
+        },
+      );
+    }
+    else {
+      return Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomThinDivider(),
+            Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Text("현재 반품중인 상품이 없습니다.", style: utils.resourceManager.textStyles.base14_700,),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   List<Widget> getSelections (ReturnData returns) {

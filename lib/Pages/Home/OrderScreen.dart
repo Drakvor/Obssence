@@ -107,17 +107,33 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget mainColumn () {
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: utils.dataManager.user!.orders.listOrders.length,
-      itemBuilder: (context, index) {
-        return Container(
-          child: Column(
-            children: getSelections(utils.dataManager.user!.orders.listOrders[index]),
-          ),
-        );
-      },
-    );
+    if (utils.dataManager.user!.orders.listOrders.length > 0) {
+      return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: utils.dataManager.user!.orders.listOrders.length,
+        itemBuilder: (context, index) {
+          return Container(
+            child: Column(
+              children: getSelections(utils.dataManager.user!.orders.listOrders[index]),
+            ),
+          );
+        },
+      );
+    }
+    else {
+      return Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomThinDivider(),
+            Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Text("주문 목록이 없습니다.", style: utils.resourceManager.textStyles.base14_700,),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   List<Widget> getSelections (OrderData order) {

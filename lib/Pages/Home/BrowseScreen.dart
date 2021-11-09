@@ -81,32 +81,32 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Widget buildColumn (BuildContext context) {
-
-    print("got here");
     return ListView(
       physics: BouncingScrollPhysics(),
       children: [
         Container(
-          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Text("브랜드 라인업", style: utils.resourceManager.textStyles.base18_100,),
         ),
         Container(
           margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-          child: SearchBar(),
+          //child: SearchBar(),
         ),
         Container(
           height: MediaQuery.of(context).size.width*(2/3),
           child: buildBrands(),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Text("오늘의 라인업", style: utils.resourceManager.textStyles.base18_100,),
         ),
+        CustomCrossDivider(),
         Container(
           child: buildTodayProduct(),
         ),
+        CustomCrossDivider(),
         Container(
-          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Text("지난 라인업", style: utils.resourceManager.textStyles.base18_100,),
         ),
         Container(
@@ -117,6 +117,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
         Container(
           height: 20,
         ),
+        CustomThreeCrossDivider(),
       ],
     );
   }
@@ -147,19 +148,33 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Widget buildGridView (BuildContext context) {
-    return GridView.builder(
+    return ListView.builder(
       shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-        childAspectRatio: 1,
-      ),
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       physics: NeverScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-      itemCount: utils.dataManager.items!.length - 1,
+      itemCount: ((utils.dataManager.items!.length - 1)~/2),
       itemBuilder: (context, index) {
-        return BrowseItemTile(utils.dataManager.items![index + 1]);
+        return Column(
+          children: [
+            CustomThreeCrossDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  width: (MediaQuery.of(context).size.width - 40)/2,
+                  height: (MediaQuery.of(context).size.width * 0.6),
+                  child: BrowseItemTile(utils.dataManager.items![2*index + 1]),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  width: (MediaQuery.of(context).size.width - 40)/2,
+                  height: (MediaQuery.of(context).size.width * 0.6),
+                  child: BrowseItemTile(utils.dataManager.items![2*index + 2]),
+                ),
+              ],
+            ),
+          ],
+        );
       },
     );
   }

@@ -129,10 +129,10 @@ class _InvitationScreenState extends State<InvitationScreen> {
                       }
                     );
                     if (Platform.isAndroid) {
-                      await launch("sms:01065809860?body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
+                      await launch("sms:${state.phoneNumber}?body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
                     }
                     if (Platform.isIOS) {
-                      await launch("sms:01065809860;body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
+                      await launch("sms:${state.phoneNumber};body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
                     }
                   },
                   text: "초대권 보내기",

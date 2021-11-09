@@ -29,6 +29,8 @@ class ImageRes {
   late String downIndicator = _base + "DownIndicator.png";
   late String upIndicator = _base + "UpIndicator.png";
 
+  late String cross = _base + "CrossDecor.png";
+
   //Colours
   late Map<String, String> colours = {
     "orange": _base + "Orange.png",

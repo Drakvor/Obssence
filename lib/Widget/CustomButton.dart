@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
+import 'package:luxury_app_pre/Widget/CustomInnerShadow.dart';
 
 class CustomButton extends StatefulWidget {
   final VoidCallback? whenPressed;
@@ -92,34 +93,23 @@ class _CustomButtonState extends State<CustomButton> {
       margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       height: h,
       width: w,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(h/2),
-        color: utils.resourceManager.colours.background,
-        gradient: LinearGradient(
-          begin: Alignment(-0.02, -4),
-          end: Alignment(0.02, 4),
-          colors: [
-            utils.resourceManager.colours.shadowDark,
-            utils.resourceManager.colours.background,
-            utils.resourceManager.colours.shadowLight,
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: utils.resourceManager.colours.background,
-            spreadRadius: -20,
-            offset: Offset(-10, -5),
-          ),
-        ],
-      ),
-      child: ClipRect(
-        child:  BackdropFilter(
-          filter: ImageFilter.blur(sigmaY: 1, sigmaX: 1),
+      child: InnerShadow(
+        blur: 4,
+        offset: Offset(-4, -2),
+        color: utils.resourceManager.colours.shadowLight,
+        child: InnerShadow(
+          blur: 4,
+          offset: Offset(4, 2),
+          color: utils.resourceManager.colours.shadowDark,
           child: Container(
-            height: h,
-            width: w,
-            child: Center(
-              child: Text(text, style: style,),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(h/2),
+              color: utils.resourceManager.colours.background,
+            ),
+            child: Container(
+              child: Center(
+                child: Text(text, style: style,),
+              ),
             ),
           ),
         ),
