@@ -17,6 +17,7 @@ import 'package:luxury_app_pre/Pages/Home/OrderEditScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/OrderScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/PaymentScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/PostPaymentScreen.dart';
+import 'package:luxury_app_pre/Pages/Home/ProcessPaymentsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ProfileScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ReturnsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/SearchScreen.dart';
@@ -138,6 +139,12 @@ class AppManager {
   void toPaymentPage (BuildContext context, GlobalKey<NavigatorState> nav, double price, double discount) {
     nav.currentState!.push(
       CustomPageRoute(nextPage: PaymentScreen(price, discount)),
+    );
+  }
+
+  void toProcessPaymentsPage (BuildContext context, GlobalKey<NavigatorState> nav, String method) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: ProcessPaymentsScreen(method)),
     );
   }
 

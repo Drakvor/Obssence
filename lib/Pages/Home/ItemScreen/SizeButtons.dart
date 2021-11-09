@@ -43,23 +43,30 @@ class _SizeButtonsState extends State<SizeButtons> {
           state.setSize(index);
         });
       },
-      child: Container(
-        height: 40,
-        width: 40,
-        child: Stack(
-          children: [
-            buttonImage(index),
-            Center(
-              child: Container(
-                height: 30,
-                width: 30,
-                child: Center(
-                  child: Text(item.availableSizes![index].split(" ")[0], style: utils.resourceManager.textStyles.dots),
+      child: Column(
+        children: [
+          Container(
+            height: 40,
+            width: 40,
+            child: Stack(
+              children: [
+                buttonImage(index),
+                Center(
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    child: Center(
+                      child: Text(item.availableSizes![index].split(" ")[0], style: utils.resourceManager.textStyles.dots),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Container(
+            child: Text("5 남음", style: TextStyle(fontSize: 10),),
+          ),
+        ],
       ),
     );
   }

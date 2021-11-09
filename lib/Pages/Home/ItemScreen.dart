@@ -289,11 +289,11 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 5),
           child: Text("사이즈", style: utils.resourceManager.textStyles.base14_700U),
         ),
         Expanded(
-          flex: 1,
+          flex: 4,
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             width: MediaQuery.of(context).size.width,
@@ -302,11 +302,11 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         ),
         CustomThinDivider(),
         Container(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 5),
           child: Text("갯 수", style: utils.resourceManager.textStyles.base14_700U),
         ),
         Expanded(
-          flex: 1,
+          flex: 3,
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             width: MediaQuery.of(context).size.width,
@@ -315,7 +315,7 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         ),
         CustomThinDivider(),
         Container(
-          margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           width: MediaQuery.of(context).size.width,
           child: Center(
             child: CustomButton(
@@ -323,10 +323,29 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
 
                 if (selState.size == -1 || selState.quantity < 1) {
                   utils.appManager.buildAlertDialog(context, "사이즈와 갯수를 정해주세요.");
+                  return;
                   //show error
                 }
                 else {
                   CollectionReference selections = FirebaseFirestore.instance.collection("selections");
+                  for (int i = 0; i < utils.dataManager.user!.cart.listSelections.length; i++) {
+                    if (utils.dataManager.user!.cart.listSelections[i].itemId == item.id && utils.dataManager.user!.cart.listSelections[i].size == item.availableSizes![selState.size]) {
+                      if (utils.dataManager.user!.cart.listSelections[i].quantity + selState.quantity > item.availableNumber){
+                        utils.appManager.buildAlertDialog(context, "너무 많이 주문하십니다.");
+                        return;
+                      }
+                      utils.dataManager.user!.cart.listSelections[i].quantity = utils.dataManager.user!.cart.listSelections[i].quantity + selState.quantity;
+                      await selections.doc(utils.dataManager.user!.cart.listSelections[i].id).update(
+                        {
+                          "quantity": utils.dataManager.user!.cart.listSelections[i].quantity
+                        }
+                      );
+                      await overlayCont.animateTo(600, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                      setState(() {});
+                      utils.appManager.buildAlertDialog(context, "상품을 쇼핑백에 담았습니다.");
+                      return;
+                    }
+                  }
                   DocumentReference selection = await selections.add({
                     "size": item.availableSizes![selState.size],
                     "quantity": selState.quantity,

@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iamport_flutter/iamport_payment.dart';
-import 'package:iamport_flutter/model/payment_data.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
-import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
+import 'package:luxury_app_pre/Pages/Home/PaymentScreen/ReservationCalendar.dart';
+import 'package:luxury_app_pre/Pages/Home/PaymentScreen/ReservationState.dart';
+import 'package:luxury_app_pre/Pages/Home/PaymentScreen/ReservationTimes.dart';
 
 class PaymentScreen extends StatefulWidget {
   final double price;
@@ -19,16 +19,28 @@ class PaymentScreen extends StatefulWidget {
   _PaymentScreenState createState() => _PaymentScreenState(price, discount);
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProviderStateMixin {
   double price;
   double discount;
   String date = "";
+  late AnimationController reserveCont;
+  ReservationState resState = ReservationState();
   _PaymentScreenState(this.price, this.discount);
 
   int chosenOption = -1;
   List<String> options = ["card", "trans", "cash", "store"];
 
   @override
+  void initState () {
+    super.initState();
+    reserveCont = new AnimationController.unbounded(vsync: this, value: 500);
+  }
+
+  void dispose () {
+    reserveCont.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: utils.resourceManager.colours.background,
@@ -59,6 +71,29 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 buildButton(),
               ],
             ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: 0,
+            child: GestureDetector(
+              onTap: () {
+                //do nothing (for real though)
+                reserveCont.animateTo(500, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                setState(() {
+                  resState.state = 0;
+                });
+              },
+              child: buildCoverScreen(),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: (MediaQuery.of(context).size.width > 299) ? MediaQuery.of(context).size.width : 300,
+            child: getReservation(),
           ),
         ],
       ),
@@ -156,7 +191,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Text("신용카드", style: utils.resourceManager.textStyles.base12_700,),
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: buttonImage(1),
+                      child: buttonImage(0),
                     ),
                   ],
                 ),
@@ -171,7 +206,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Text("계좌이체", style: utils.resourceManager.textStyles.base12_700,),
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: buttonImage(2),
+                      child: buttonImage(1),
                     ),
                   ],
                 ),
@@ -196,7 +231,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           children: [
                             Text("날짜", style: utils.resourceManager.textStyles.base12grey,),
                             CustomRoundButton(
-                              whenPressed: () {},
+                              whenPressed: () {
+                                reserveCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                              },
                               image: utils.resourceManager.images.moreButton,
                               imagePressed: utils.resourceManager.images.moreButton,
                               w: 20,
@@ -208,44 +245,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: buttonImage(3),
-                    ),
-                  ],
-                ),
-              ),
-              CustomThinDivider(),
-              Container(
-                height: 75,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("매장결제", style: utils.resourceManager.textStyles.base12_700),
-                        Container(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("날짜", style: utils.resourceManager.textStyles.base12grey,),
-                            CustomRoundButton(
-                              whenPressed: () {},
-                              image: utils.resourceManager.images.moreButton,
-                              imagePressed: utils.resourceManager.images.moreButton,
-                              w: 20,
-                              h: 20,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: buttonImage(4),
+                      child: buttonImage(2),
                     ),
                   ],
                 ),
@@ -314,7 +314,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("총 상품 가격: ", style: utils.resourceManager.textStyles.base12_100,),
-                    Text("￦" + price.toInt().toString(), style: utils.resourceManager.textStyles.base13_100,),
+                    Text("￦" + price.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base13_100,),
                   ],
                 ),
                 Container(
@@ -334,7 +334,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("할인: ", style: utils.resourceManager.textStyles.base12_100,),
-                    Text("￦" + discount.toInt().toString(), style: utils.resourceManager.textStyles.base13_700gold,),
+                    Text("￦" + discount.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base13_700gold,),
                   ],
                 ),
                 Container(
@@ -348,7 +348,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("합계: ", style: utils.resourceManager.textStyles.base14_700,),
-                    Text("￦" + (price - discount).toInt().toString(), style: utils.resourceManager.textStyles.base14_700,),
+                    Text("￦" + (price - discount).toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'), style: utils.resourceManager.textStyles.base14_700,),
                   ],
                 ),
                 Container(
@@ -367,7 +367,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: CustomButton(
         whenPressed: () async {
-          utils.dataManager.postOrder(utils.dataManager.user!.cart.listSelections); //To E-count
+          /*utils.dataManager.postOrder(utils.dataManager.user!.cart.listSelections); //To E-count
           //And now to Firebase
           CollectionReference orders = FirebaseFirestore.instance.collection('orders');
           CollectionReference selections = FirebaseFirestore.instance.collection('selections');
@@ -399,8 +399,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             );
           }
           //And finally, the application code?
-          await utils.dataManager.getUserData();
-          utils.appManager.toPostPaymentPage(context, utils.pageNav, {"Hi": "Hi"});
+          await utils.dataManager.getUserData();*/
+          utils.appManager.toProcessPaymentsPage(context, utils.pageNav, options[chosenOption]);
         },
         text: "결제",
         style: utils.resourceManager.textStyles.base,
@@ -410,72 +410,117 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget executePayment () {
-    return IamportPayment(
-      userCode: "imp00579348",
-      data: PaymentData(
-        pg: 'html5_inicis',
-        payMethod: 'card', // card: 카드, trans: 계좌이체, vbank: 가상계좌, phone: 휴대폰 소액 결제
-        amount: 3000,
-        merchantUid: 's2f34gh9jd2',
-        name: 'Test',
-        buyerName: '권가람',
-        buyerTel: '010-6580-9860',
-        appScheme: 'luxury_app',
-      ),
-      initialChild: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("결제중..."),
-              Container(
-                padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-                child: Text('잠시만 기다려주세요...', style: TextStyle(fontSize: 20.0)),
-              ),
-            ],
+  Widget buildCoverScreen () {
+    return AnimatedBuilder(
+      animation: reserveCont,
+      builder: (context, child) {
+        return Transform(
+          transform: Matrix4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, (reserveCont.value < 500) ? 0 : MediaQuery.of(context).size.height, 0, 1,
           ),
-        ),
-      ),
-      callback: (Map<String, String> result) async {
-        //do nothing
-        if (result["success"] == "true") {
-          utils.dataManager.postOrder(utils.dataManager.user!.cart.listSelections); //To E-count
-          //And now to Firebase
-          CollectionReference orders = FirebaseFirestore.instance.collection('orders');
-          CollectionReference selections = FirebaseFirestore.instance.collection('selections');
-          List items = [];
-          for (int i = 0; i < utils.dataManager.user!.cart.listSelections.length; i++) {
-            items.add(utils.dataManager.user!.cart.listSelections[i].id);
-          }
-          DocumentReference snapshot = await orders.add(
-            {
-              "user": utils.dataManager.user!.id,
-              "orderDate": DateTime.now().year * 10000 + DateTime.now().month * 100 + DateTime.now().day,
-              "orderStatus": "submitted",
-              "returns": [],
-              "items": items,
-              "trackingId": "",
-              "oid": "21102101",
-            }
-          );
-          await orders.doc(snapshot.id).update(
-            {
-              "id": snapshot.id,
-            }
-          );
-          for (int i = 0; i < utils.dataManager.user!.cart.listSelections.length; i++) {
-            await selections.doc(utils.dataManager.user!.cart.listSelections[i].id).update(
-              {
-                "parent": snapshot.id,
-              }
-            );
-          }
-          //And finally, the application code?
-          await utils.dataManager.getUserData();
-        }
-        //move to next page
+          child: Opacity(
+            opacity: (1-(reserveCont.value-50)/450)/2,
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Color(0xff000000),
+            ),
+          ),
+        );
       },
     );
+  }
+
+  Widget getReservation () {
+    return AnimatedBuilder(
+      animation: reserveCont,
+      builder: (context, child) {
+        return Transform(
+          transform: Matrix4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, reserveCont.value, 0, 1,
+          ),
+          child: child,
+        );
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 500,
+        decoration: BoxDecoration(
+          color: utils.resourceManager.colours.background,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xff555555),
+              offset: Offset(-1, -1),
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: getReservationOption(),
+      ),
+    );
+  }
+
+  Widget getReservationOption () {
+    if (resState.state == 0) {
+      return getResCalendar();
+    }
+    if (resState.state == 1) {
+      return getResTime();
+    }
+    if (resState.state == 2) {
+      return getResLocation();
+    }
+    if (resState.state == 3) {
+      return getResConfirm();
+    }
+    else {
+      return Container();
+    }
+  }
+
+  Widget getResCalendar () {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            child: Text("Choose a Date."),
+          ),
+          ReservationCalendar(() {setState(() {});}, resState),
+        ],
+      ),
+    );
+  }
+
+  Widget getResTime () {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            child: Text("Choose a Time."),
+          ),
+          Container(
+            height: 30,
+          ),
+          ReservationTimes(() {setState(() {});}, resState),
+        ],
+      ),
+    );
+  }
+
+  Widget getResLocation () {
+    return Container();
+  }
+
+  Widget getResConfirm () {
+    return Container();
   }
 }
