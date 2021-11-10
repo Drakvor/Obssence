@@ -16,25 +16,33 @@ class _ReservationCalendarState extends State<ReservationCalendar> {
   Function changeState;
   DateTime today = DateTime.now();
   ReservationState state;
+
+  List<String> dayNames = ["월", "화", "수", "목", "금", "토", "일"];
   _ReservationCalendarState(this.changeState, this.state);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (MediaQuery.of(context).size.width > 299) ? MediaQuery.of(context).size.width - 50 : 250,
       width: MediaQuery.of(context).size.width,
+      height: 300,
       child: buildCalendar(),
     );
   }
 
   Widget buildCalendar () {
     return GridView.builder(
+      physics: BouncingScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
       ),
-      itemCount: 31,
+      itemCount: 38,
       itemBuilder: (context, index) {
-        return buildButton(index);
+        if (index < 7) {
+          return Center(
+            child: Text(dayNames[index], style: utils.resourceManager.textStyles.base12_100,),
+          );
+        }
+        return buildButton(index - 7);
       },
     );
   }

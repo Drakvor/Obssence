@@ -1,6 +1,7 @@
 class ReservationState {
   int state = 0;
   int date = 0;
+  String month = "10월";
   int time = 0;
   String location = "";
 

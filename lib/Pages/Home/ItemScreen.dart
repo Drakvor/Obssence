@@ -283,9 +283,13 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
       children: [
         Container(
           height: 20,
-          width: MediaQuery.of(context).size.width,
-          child: Center(
-            child: Image.asset(utils.resourceManager.images.downIndicator),
+          child: GestureDetector(
+            onTap: () async {
+              overlayCont.animateTo(600, duration: Duration(milliseconds: 200), curve: Curves.linear);
+            },
+            child: Center(
+              child: Image.asset(utils.resourceManager.images.downIndicator),
+            ),
           ),
         ),
         Container(

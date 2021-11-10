@@ -114,9 +114,14 @@ class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMix
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: 10,
-            child: Center(
-              child: Image.asset(utils.resourceManager.images.downIndicator),
+            height: 20,
+            child: GestureDetector(
+              onTap: () async {
+                await utils.appManager.agentOff!();
+              },
+              child: Center(
+                child: Image.asset(utils.resourceManager.images.downIndicator),
+              ),
             ),
           ),
           Container(

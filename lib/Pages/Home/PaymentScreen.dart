@@ -97,9 +97,9 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
             right: 0,
             top: 0,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 //do nothing (for real though)
-                reserveCont.animateTo(500, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                await reserveCont.animateTo(500, duration: Duration(milliseconds: 200), curve: Curves.linear);
                 setState(() {
                   resState.state = 0;
                 });
@@ -248,7 +248,7 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("날짜", style: utils.resourceManager.textStyles.base12grey,),
+                            Text((resState.date == 0) ? "날짜" : "2021년 10월 " + resState.date.toString() + "일", style: utils.resourceManager.textStyles.base12grey,),
                             CustomRoundButton(
                               whenPressed: () {
                                 reserveCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
@@ -510,9 +510,28 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            child: Text("Choose a Date."),
+            height: 20,
+            child: GestureDetector(
+              onTap: () async {
+                await reserveCont.animateTo(500, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                setState(() {
+                  resState.state = 0;
+                });
+              },
+              child: Center(
+                child: Image.asset(utils.resourceManager.images.downIndicator),
+              ),
+            ),
           ),
-          ReservationCalendar(() {setState(() {});}, resState),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: Text("몇 일이 편하신가요?", style: utils.resourceManager.textStyles.base14_700,),
+          ),
+          CustomThinDivider(),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ReservationCalendar(() {setState(() {});}, resState),
+          ),
         ],
       ),
     );
@@ -524,12 +543,29 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            child: Text("Choose a Time."),
+            height: 20,
+            child: GestureDetector(
+              onTap: () async {
+                await reserveCont.animateTo(500, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                setState(() {
+                  resState.state = 0;
+                });
+              },
+              child: Center(
+                child: Image.asset(utils.resourceManager.images.downIndicator),
+              ),
+            ),
+          ),
+          Container(
+            child: Text("몇 시가 편하신가요?", style: utils.resourceManager.textStyles.base14_700,),
           ),
           Container(
             height: 30,
           ),
-          ReservationTimes(() {setState(() {});}, resState),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ReservationTimes(() {setState(() {});}, resState),
+          ),
         ],
       ),
     );
