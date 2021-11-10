@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: utils.resourceManager.colours.background,
+      backgroundColor: (state.state == 0) ? utils.resourceManager.colours.background : utils.resourceManager.colours.backgroundSecond,
       body: Stack(
         children: [
           (state.state == 0) ? getPhoneNumber() : getPassword(),
@@ -167,11 +167,11 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 5),
-            child: Text("비밀번호를 입력해 주세요.", style: utils.resourceManager.textStyles.base15_700),
+            child: Text("비밀번호를 입력해 주세요.", style: utils.resourceManager.textStyles.base15_700white),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 5, 0, 20),
-            child: Text("숫자 4자리 + 영문자 1자리", style: utils.resourceManager.textStyles.base15),
+            child: Text("숫자 4자리 + 영문자 1자리", style: utils.resourceManager.textStyles.base15white),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -279,12 +279,12 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             width: 50,
           ),
-          (state.password.length > 0) ? Container(width: 20, child: Text(state.password.substring(0, 1), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 1) ? Container(width: 20, child: Text(state.password.substring(1, 2), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 2) ? Container(width: 20, child: Text(state.password.substring(2, 3), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 3) ? Container(width: 20, child: Text(state.password.substring(3, 4), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.password.length > 0) ? Container(width: 20, child: Text(state.password.substring(0, 1), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 1) ? Container(width: 20, child: Text(state.password.substring(1, 2), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 2) ? Container(width: 20, child: Text(state.password.substring(2, 3), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 3) ? Container(width: 20, child: Text(state.password.substring(3, 4), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(),
-          (state.password.length > 4) ? Container(width: 20, child: Text(state.password.substring(4, 5), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.password.length > 4) ? Container(width: 20, child: Text(state.password.substring(4, 5), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(
             width: 50,
           ),
@@ -293,12 +293,12 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             width: 50,
           ),
-          (state.password.length > 0) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 1) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 2) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.password.length > 3) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.password.length > 0) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 1) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 2) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.password.length > 3) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(),
-          (state.password.length > 4) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.password.length > 4) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(
             width: 50,
           ),
@@ -388,7 +388,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: CustomButton(
+            child: CustomDarkButton(
               whenPressed: () async {
                 try {
                   await FirebaseAuth.instance.signInWithEmailAndPassword(email: state.phoneNumber + "@obssence.com", password: state.password + "0");
@@ -404,7 +404,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               text: "확인",
-              style: utils.resourceManager.textStyles.base14,
+              style: utils.resourceManager.textStyles.base14white,
               h: 30,
               w: 90,
             ),
@@ -436,6 +436,7 @@ class _LoginScreenState extends State<LoginScreen> {
       numRows: (state.password.length < passwordNumNumbers)? passwordNumberRows : passwordLetterRows,
       numCols: (state.password.length < passwordNumNumbers)? passwordNumberCols : passwordLetterCols,
       style: utils.resourceManager.textStyles.base25,
+      dark: true,
     );
   }
 
@@ -447,15 +448,15 @@ class _LoginScreenState extends State<LoginScreen> {
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.5),
-        color: utils.resourceManager.colours.background,
+        color: utils.resourceManager.colours.backgroundSecond,
         boxShadow: [
           BoxShadow(
-            color: utils.resourceManager.colours.shadowDark,
+            color: utils.resourceManager.colours.shadowDarkSecond,
             offset: Offset(6, 2),
             blurRadius: 8,
           ),
           BoxShadow(
-            color: utils.resourceManager.colours.shadowLight,
+            color: utils.resourceManager.colours.shadowLightSecond,
             offset: Offset(-3, -2),
             blurRadius: 8,
           ),
@@ -468,7 +469,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 30,
             width: 90,
             child: Center(
-              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14),
+              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14white),
             ),
           ),
         ),
@@ -483,19 +484,19 @@ class _LoginScreenState extends State<LoginScreen> {
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.5),
-        color: utils.resourceManager.colours.background,
+        color: utils.resourceManager.colours.backgroundSecond,
         gradient: LinearGradient(
           begin: Alignment(-0.02, -4),
           end: Alignment(0.02, 4),
           colors: [
-            utils.resourceManager.colours.shadowDark,
-            utils.resourceManager.colours.background,
-            utils.resourceManager.colours.shadowLight,
+            utils.resourceManager.colours.shadowDarkSecond,
+            utils.resourceManager.colours.backgroundSecond,
+            utils.resourceManager.colours.shadowLightSecond,
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: utils.resourceManager.colours.background,
+            color: utils.resourceManager.colours.backgroundSecond,
             spreadRadius: -20,
             offset: Offset(-10, -5),
           ),
@@ -508,7 +509,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 30,
             width: 90,
             child: Center(
-              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14),
+              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14white),
             ),
           ),
         ),
@@ -520,7 +521,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget backButton () {
     return Container(
       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: CustomRoundButton(
+      child: (state.state == 0) ? CustomRoundButton(
         whenPressed: () {
           utils.appManager.previousPage(utils.loginNav);
         },
@@ -528,7 +529,7 @@ class _LoginScreenState extends State<LoginScreen> {
         imagePressed: utils.resourceManager.images.backButton,
         h: 40,
         w: 40,
-      ),
+      ) : Container(),
     );
   }
 }

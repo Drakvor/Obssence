@@ -13,8 +13,10 @@ class KeyboardButton extends StatefulWidget {
     required this.w,
     required this.isText,
     required this.imageStr,
+    this.dark = false,
   }) : super(key: key);
 
+  final bool dark;
   final void Function(String) whenPressed;
   final TextStyle style;
   final String text;
@@ -59,9 +61,9 @@ class _KeyboardButtonState extends State<KeyboardButton> {
     return Container(
       height: widget.h,
       width: widget.w,
-      color: (_pressed) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
+      color: (_pressed) ? utils.resourceManager.colours.white : (widget.dark ? utils.resourceManager.colours.backgroundSecond : utils.resourceManager.colours.background),
       child: Center(
-        child: widget.isText? Text(widget.text, textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,) : Image.asset(widget.imageStr),
+        child: widget.isText? Text(widget.text, textAlign: TextAlign.center, style: widget.dark ? utils.resourceManager.textStyles.base25white : utils.resourceManager.textStyles.base25,) : Image.asset(widget.imageStr),
       ),
     );
   }
@@ -70,9 +72,9 @@ class _KeyboardButtonState extends State<KeyboardButton> {
     return Container(
       height: widget.h,
       width: widget.w,
-      color: (_pressed) ? utils.resourceManager.colours.white : utils.resourceManager.colours.background,
+      color: (_pressed) ? utils.resourceManager.colours.white : (widget.dark ? utils.resourceManager.colours.backgroundSecond : utils.resourceManager.colours.background),
       child: Center(
-        child: Text(widget.text, textAlign: TextAlign.center, style: utils.resourceManager.textStyles.base25,),
+        child: Text(widget.text, textAlign: TextAlign.center, style: widget.dark ? utils.resourceManager.textStyles.base25white : utils.resourceManager.textStyles.base25,),
       ),
     );
   }

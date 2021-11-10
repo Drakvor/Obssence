@@ -13,6 +13,11 @@ class ReservationState {
     date = data;
   }
 
+  void setTime (int data) {
+    time = data;
+  }
+
+
   void reset () {
     state = 0;
     date = 0;

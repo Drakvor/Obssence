@@ -42,7 +42,7 @@ class _ReservationTimesState extends State<ReservationTimes> {
     return GestureDetector(
       onTapDown: (TapDownDetails details) {
         setState(() {
-          state.setDate(index + 10);
+          state.setTime(index + 10);
           state.nextState();
           changeState();
         });

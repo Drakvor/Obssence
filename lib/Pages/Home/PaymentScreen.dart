@@ -87,7 +87,9 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                   ),
                 ),
                 CustomThinDivider(),
-                buildButton(),
+                Center(
+                  child: buildButton(),
+                ),
               ],
             ),
           ),
@@ -383,7 +385,6 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
 
   Widget buildButton () {
     return Container(
-      margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: CustomButton(
         whenPressed: () async {
           /*utils.dataManager.postOrder(utils.dataManager.user!.cart.listSelections); //To E-count
@@ -422,9 +423,9 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
           utils.appManager.toProcessPaymentsPage(context, utils.pageNav, options[chosenOption]);
         },
         text: "결제",
-        style: utils.resourceManager.textStyles.base,
-        w: 120,
-        h: 25,
+        style: utils.resourceManager.textStyles.base14,
+        w: 70,
+        h: 30,
       ),
     );
   }

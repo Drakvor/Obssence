@@ -16,6 +16,7 @@ import 'package:luxury_app_pre/Pages/Home/ItemScreen/SelectionState.dart';
 import 'dart:io';
 import 'package:luxury_app_pre/Pages/Home/ItemScreen/QuantityButtons.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundTextButton.dart';
+import 'package:luxury_app_pre/Widget/CustomScrollIndicator.dart';
 
 class ItemScreen extends StatefulWidget {
   final ItemData item;
@@ -32,8 +33,10 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
   final List<File> images;
   late AnimationController overlayCont;
   final ScrollController scrollCont = new ScrollController();
+  final PageController pageControl = new PageController();
   bool _scrolling = false;
   final bool editing;
+  int index = 0;
   SelectionState selState = new SelectionState(1, -1);
   _ItemScreenState(this.item, this.images, this.editing);
 
@@ -48,6 +51,14 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
     }
   }
 
+  void listenPage () {
+    if (pageControl.page != null) {
+      setState(() {
+        index = (pageControl.page! + 0.5).toInt();
+      });
+    }
+  }
+
   void changeState () {
     setState(() {
       //do nothing
@@ -59,10 +70,14 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
     super.initState();
     overlayCont = new AnimationController.unbounded(vsync: this, value: editing ? 100 : 600);
     scrollCont.addListener(listen);
+    pageControl.addListener(listenPage);
   }
 
   void dispose () {
     scrollCont.removeListener(listen);
+    pageControl.removeListener(listenPage);
+    scrollCont.dispose();
+    pageControl.dispose();
     overlayCont.dispose();
     super.dispose();
   }
@@ -139,14 +154,19 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         children: [
           Container(
             child: PageView(
+              controller: pageControl,
               physics: BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               children: getPages(),
             ),
           ),
           Positioned(
-            right: 5,
-            child: buildScrollIndicator(),
+            left: 0,
+            right: 0,
+            bottom: 2,
+            child: Center(
+              child: CustomScrollIndicator(index, images.length.toDouble()),
+            ),
           ),
         ],
       ),
@@ -218,10 +238,6 @@ class _ItemScreenState extends State<ItemScreen> with SingleTickerProviderStateM
         ),
       ],
     );
-  }
-
-  Widget buildScrollIndicator () {
-    return Container();
   }
 
   Widget buildOverlay () {

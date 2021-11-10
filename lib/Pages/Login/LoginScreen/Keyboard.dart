@@ -13,11 +13,13 @@ class Keyboard extends StatelessWidget {
     required this.numCols,
     required this.style,
     this.widthHeightRatio = 2/3,
+    this.dark = false,
   }) :  totalButtons = numRows * numCols,
         textButtons = characterSet.length,
         assert(specialFunctions.length + characterSet.length == numRows * numCols),
         super(key: key,);
 
+  final bool dark;
   final List<String> characterSet;
   final void Function(String) textFunction;
   final List<void Function()> specialFunctions;
@@ -63,6 +65,7 @@ class Keyboard extends StatelessWidget {
             w: buttonWidth,
             isText: isTextButton(index),
             imageStr: (isTextButton(index))? utils.resourceManager.images.roundButton : specialImageSet[index-textButtons],
+            dark: dark,
           );
         },
       ),
