@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class TextStyleRes {
   TextStyle base = TextStyle(fontFamily: "NanumSquare", fontSize: 15);
+  TextStyle base7_700 = TextStyle(fontFamily: "NanumSquare", fontSize: 7, fontWeight: FontWeight.w700);
   TextStyle base10 = TextStyle(fontFamily: "NanumSquare", fontSize: 10);
+  TextStyle base10_800 = TextStyle(fontFamily: "NanumSquare", fontSize: 10, fontWeight: FontWeight.w800);
   TextStyle base11_700 = TextStyle(fontFamily: "NanumSquare", fontSize: 11, fontWeight: FontWeight.w700);
+  TextStyle base11_700U = TextStyle(fontFamily: "NanumSquare", fontSize: 11, fontWeight: FontWeight.w700, decoration: TextDecoration.underline);
   TextStyle base12 = TextStyle(fontFamily: "NanumSquare", fontSize: 12);
   TextStyle base12_100 = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w100);
   TextStyle base12_100U = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w100, decoration: TextDecoration.underline);

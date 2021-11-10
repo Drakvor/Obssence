@@ -100,7 +100,7 @@ class _TodayItemTileState extends State<TodayItemTile> {
                   width: 50,
                   height: 50,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         child: Text("Oct", style: utils.resourceManager.textStyles.base11_700,),

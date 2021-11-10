@@ -24,6 +24,7 @@ import 'package:luxury_app_pre/Pages/Home/SearchScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/SettingsScreen.dart';
 import 'dart:io';
 import 'package:luxury_app_pre/Pages/Home/ShoppingScreen.dart';
+import 'package:luxury_app_pre/Pages/Home/TermsConditionsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/TestPage.dart';
 import 'package:luxury_app_pre/Pages/Home/UserScreen.dart';
 import 'package:luxury_app_pre/Pages/Login/LoginScreen.dart';
@@ -187,6 +188,12 @@ class AppManager {
   void toSettingsPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
       CustomPageRoute(nextPage: SettingsScreen()),
+    );
+  }
+
+  void toTermsConditionsPage (BuildContext context, GlobalKey<NavigatorState> nav) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: TermsConditionsScreen()),
     );
   }
 

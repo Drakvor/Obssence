@@ -63,6 +63,25 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                 CustomDivider(),
                 Container(
                   margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("개인정보 제공 동의: OBSSENCE 약관 - ", style: utils.resourceManager.textStyles.base12,),
+                      CustomButton(
+                        whenPressed: () {
+                          utils.appManager.toTermsConditionsPage(context, utils.pageNav);
+                        },
+                        text: "상세보기",
+                        style: utils.resourceManager.textStyles.base10,
+                        w: 50,
+                        h: 20,
+                      ),
+                    ],
+                  ),
+                ),
+                CustomThinDivider(),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Center(
                     child: Text("주문 내용을 확인하였으며, 정보제공 등에 동의 합니다.", style: utils.resourceManager.textStyles.base14,),
                   ),

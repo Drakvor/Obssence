@@ -93,9 +93,47 @@ class _BrowseItemTileState extends State<BrowseItemTile> {
     return Container(
       child: Stack(
         children: [
-          buildPageView(),
           Positioned(
-            top: 1,
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 25,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 25,
+                  height: 25,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text("Oct", style: utils.resourceManager.textStyles.base7_700,),
+                      ),
+                      Container(
+                        child: Text("11", style: utils.resourceManager.textStyles.base10_800,),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Text(item.brand, style: utils.resourceManager.textStyles.base11_700U,),
+                ),
+                Container(
+                  width: 25,
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 25,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.width / 2,
+            child: buildPageView(),
+          ),
+          Positioned(
+            bottom: 0,
             left: 0,
             right: 0,
             height: 10,

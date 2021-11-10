@@ -408,6 +408,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
           margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: CustomButton(
             whenPressed: () {
+              if (utils.dataManager.user!.cart.listSelections.isEmpty) {
+                utils.appManager.buildAlertDialog(context, "쇼핑백이 비어 있습니다");
+                return;
+              }
               utils.appManager.toPaymentPage(context, utils.pageNav, price, discount);
             },
             text: "결제",
