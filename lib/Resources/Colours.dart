@@ -4,6 +4,7 @@ class ColourRes {
   Color background = Color(0xffe3e0d8);
   Color backgroundSecond = Color(0xff3a3835);
   Color almostBackground = Color(0xfee3e0d8);
+  Color coverScreen = Color(0x88000000);
   Color transparent = Color(0x00000000);
   Color borders = Color(0xffb9b9b9);
   Color white = Color(0xffffffff);

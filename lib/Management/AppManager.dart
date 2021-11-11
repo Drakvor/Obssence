@@ -38,6 +38,7 @@ class AppManager {
   Function? agentOff;
   int currentScreen = 0; //0: inactive, 1: login, 2:home
   TextEditingController searchControl = new TextEditingController();
+  late AnimationController overlayCont;
 
   bool loggedIn = false;
   bool agentOn = false;
