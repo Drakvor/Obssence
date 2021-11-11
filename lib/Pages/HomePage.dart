@@ -10,6 +10,7 @@ import 'package:luxury_app_pre/Data/Tags.dart';
 import 'package:luxury_app_pre/Data/User.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen.dart';
 import 'package:luxury_app_pre/Pages/Agent/AgentMain.dart';
+import 'package:luxury_app_pre/Pages/Overlay/OverlayMain.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -40,6 +41,21 @@ class _HomePageState extends State<HomePage> {
           switch (settings.name) {
             default:
               return CustomPageRoute(nextPage: BrowseScreen());
+          }
+        },
+      );
+    }
+    if (utils.overlayNavObj == null) {
+      utils.overlayNavObj = Navigator(
+        key: utils.overlayNav,
+        initialRoute: "/main",
+        onGenerateInitialRoutes: (NavigatorState navigator, String initRouteName) {
+          return [navigator.widget.onGenerateRoute!(RouteSettings(name: "/"))!];
+        },
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            default:
+              return CustomPageRoute(nextPage: OverlayMain(0, Container()));
           }
         },
       );
@@ -89,6 +105,7 @@ class _HomePageState extends State<HomePage> {
               buildBG(),
               buildPage(),
               buildAgent(),
+              buildOverlay(),
             ],
           ),
         ),
@@ -110,5 +127,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildAgent() {
     return AgentMain();
+  }
+
+  Widget buildOverlay () {
+    return utils.overlayNavObj!;
   }
 }

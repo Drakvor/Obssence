@@ -5,6 +5,7 @@ import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
+import 'package:luxury_app_pre/Widget/CustomRoundTextButton.dart';
 
 class UserScreen extends StatefulWidget {
 
@@ -27,7 +28,7 @@ class _UserScreenState extends State<UserScreen> {
           Column(
             children: [
               Container(
-                height: 120,
+                height: 180,
                 child: mainHeader(),
               ),
               CustomDivider(),
@@ -105,7 +106,7 @@ class _UserScreenState extends State<UserScreen> {
           ),
         ),
         Container(
-          height: 70,
+          height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,6 +123,61 @@ class _UserScreenState extends State<UserScreen> {
               Container(
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 width: 40,
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 80,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 50,
+                      child: CustomRoundTextButton(
+                        whenPressed: () {},
+                        text: "01",
+                        style: utils.resourceManager.textStyles.dots15,
+                        h: 50,
+                        w: 50,
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      child: Center(
+                        child: Text("초대권", style: utils.resourceManager.textStyles.base12,),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 50,
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 50,
+                      child: CustomRoundTextButton(
+                        whenPressed: () {},
+                        text: "01",
+                        style: utils.resourceManager.textStyles.dots15,
+                        h: 50,
+                        w: 50,
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      child: Center(
+                        child: Text("초대권", style: utils.resourceManager.textStyles.base12,),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

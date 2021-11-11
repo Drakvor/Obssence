@@ -9,11 +9,13 @@ class Utils {
   GlobalKey<NavigatorState> bgNav = GlobalKey();
   GlobalKey<NavigatorState> pageNav = GlobalKey();
   GlobalKey<NavigatorState> agentNav = GlobalKey();
+  GlobalKey<NavigatorState> overlayNav = GlobalKey();
   GlobalKey<NavigatorState> loginNav = GlobalKey();
   Navigator? mainNavObj;
   Navigator? bgNavObg;
   Navigator? pageNavObj;
   Navigator? agentNavObj;
+  Navigator? overlayNavObj;
   Navigator? loginNavObj;
 
   double screenHeight;
