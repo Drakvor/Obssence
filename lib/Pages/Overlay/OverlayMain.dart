@@ -95,6 +95,9 @@ class _OverlayMainState extends State<OverlayMain> with SingleTickerProviderStat
               child: Column(
                 children: [
                   GestureDetector(
+                    onTap: () {
+                      overlayCont.animateTo(0, duration: Duration(milliseconds: 250), curve: Curves.linear);
+                    },
                     child: Container(
                       height: 20,
                       width: MediaQuery.of(context).size.width,

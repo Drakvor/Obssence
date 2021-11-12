@@ -228,6 +228,10 @@ class AppManager {
     );
   }
 
+  void loadOverlay (double height, Widget overlay) {
+    
+  }
+
   void buildAlertDialog (BuildContext context, String text) {
     showDialog(
       barrierDismissible: true,
