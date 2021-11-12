@@ -5,12 +5,15 @@ import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Data/Item.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
+import 'package:luxury_app_pre/Pages/Home/ShoppingScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/ShoppingCartState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomImage.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/QuantityEditButtons.dart';
+import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/SizeEditButtons.dart';
 
 class ShoppingCartItem extends StatefulWidget {
   final ShoppingCartState state;
@@ -102,10 +105,11 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
             children: [
               CustomButton(
                 whenPressed: () {
+                  utils.appManager.loadOverlay!(200, getQuantityFields());
+                  utils.appManager.overlayCont.animateTo(1, duration: Duration(milliseconds: 150), curve: Curves.linear);
                   setPageState(() {
                     state.setSelection(selection);
                     state.setState(1);
-                    state.itemCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
                   });
                 },
                 text: "갯수: " + selection.quantity.toString(),
@@ -115,10 +119,11 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
               ),
               CustomButton(
                 whenPressed: () {
+                  utils.appManager.loadOverlay!(200, getSizeFields());
+                  utils.appManager.overlayCont.animateTo(1, duration: Duration(milliseconds: 150), curve: Curves.linear);
                   setPageState(() {
                     state.setSelection(selection);
                     state.setState(2);
-                    state.itemCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
                   });
                 },
                 text: "사이즈: " + selection.size,
@@ -191,5 +196,81 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
           .ref("Items/" + selection.item!.id + "/0.png")
           .writeToFile(image);
     }
+  }
+
+  Widget getQuantityFields () {
+    return Container(
+      height: 180,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text("갯 수:"),
+          QuantityEditButtons(state),
+          CustomButton(
+            whenPressed: () async {
+              if (state.quantity != state.selection!.quantity) {
+                CollectionReference selections = FirebaseFirestore.instance.collection("selections");
+
+                state.selection!.quantity = state.quantity;
+
+                await selections.doc(state.selection!.id).update({
+                  "quantity": state.selection!.quantity,
+                });
+              }
+              state.setState(0);
+              await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              utils.pageNav.currentState!.pushReplacement(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) => ShoppingScreen(),
+                  transitionDuration: Duration.zero,
+                ),
+              );
+            },
+            text: "확인",
+            style: utils.resourceManager.textStyles.base,
+            h: 30,
+            w: 70,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getSizeFields () {
+    return Container(
+      height: 180,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text("사이즈:"),
+          SizeEditButtons(state),
+          CustomButton(
+            whenPressed: () async {
+              if (state.size != state.selection!.item!.availableSizes!.indexOf(state.selection!.size)) {
+                CollectionReference selections = FirebaseFirestore.instance.collection("selections");
+
+                state.selection!.size = state.selection!.item!.availableSizes![state.size];
+
+                await selections.doc(state.selection!.id).update({
+                  "size": state.selection!.size,
+                });
+              }
+              state.setState(0);
+              await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              utils.pageNav.currentState!.pushReplacement(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) => ShoppingScreen(),
+                  transitionDuration: Duration.zero,
+                ),
+              );
+            },
+            text: "확인",
+            style: utils.resourceManager.textStyles.base,
+            h: 30,
+            w: 70,
+          ),
+        ],
+      ),
+    );
   }
 }

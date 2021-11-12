@@ -6,11 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/ShoppingCartItem.dart';
 import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/ShoppingCartState.dart';
-import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/SizeEditButtons.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
-import 'package:luxury_app_pre/Pages/Home/ShoppingScreen/QuantityEditButtons.dart';
 
 class ShoppingScreen extends StatefulWidget {
 
@@ -18,10 +16,9 @@ class ShoppingScreen extends StatefulWidget {
   _ShoppingScreenState createState() => _ShoppingScreenState();
 }
 
-class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStateMixin {
+class _ShoppingScreenState extends State<ShoppingScreen> with SingleTickerProviderStateMixin {
   late AnimationController overlayCont;
-  late AnimationController stateCont;
-  late ShoppingCartState state;
+  late ShoppingCartState state = ShoppingCartState();
   double price = 0;
   double discount = 0;
 
@@ -40,13 +37,10 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
   void initState () {
     super.initState();
     overlayCont = new AnimationController.unbounded(vsync: this, value: 0);
-    stateCont = new AnimationController(vsync: this, value: 0);
-    state = ShoppingCartState(stateCont);
   }
 
   void dispose () {
     overlayCont.dispose();
-    stateCont.dispose();
     super.dispose();
   }
 
@@ -120,21 +114,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
   }
 
   Widget buildScaffold(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (state.state != 0) {
-          setState(() {
-            state.itemCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
-            state.setState(0);
-          });
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        backgroundColor: utils.resourceManager.colours.transparent,
-        body: buildStack(),
-      ),
+    return Scaffold(
+      backgroundColor: utils.resourceManager.colours.transparent,
+      body: buildStack(),
     );
   }
 
@@ -200,26 +182,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
               }
             },
           ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          top: 0,
-          child: GestureDetector(
-            onTap: () {
-              //do nothing (for real though)
-              state.itemCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
-            },
-            child: buildCoverScreen(),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: MediaQuery.of(context).size.width/2 + 100,
-          child: buildEditItem(),
         ),
       ],
     );
@@ -448,148 +410,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> with TickerProviderStat
           ),
         );
       },
-    );
-  }
-
-  Widget buildCoverScreen () {
-    return AnimatedBuilder(
-      animation: state.itemCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, (state.itemCont.value > 0) ? 0 : MediaQuery.of(context).size.height, 0, 1,
-          ),
-          child: Opacity(
-            opacity: state.itemCont.value/2,
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              color: Color(0xff000000),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildEditItem () {
-    return AnimatedBuilder(
-      animation: state.itemCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, (-state.itemCont.value + 1)*(MediaQuery.of(context).size.width/2) + 100, 0, 1,
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.width/2 + 100,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xff555555),
-                  offset: Offset(0, -2),
-                  blurRadius: 2,
-                ),
-              ],
-              borderRadius: BorderRadius.circular(15),
-              color: utils.resourceManager.colours.background,
-            ),
-            child: getEditItemFields(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget getEditItemFields () {
-    if (state.state == 1) {
-      return getQuantityFields();
-    }
-    if (state.state == 2) {
-      return getSizeFields();
-    }
-    return Container();
-  }
-
-  Widget getQuantityFields () {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text("갯 수:"),
-        QuantityEditButtons(state),
-        CustomButton(
-          whenPressed: () async {
-            if (state.quantity != state.selection!.quantity) {
-              CollectionReference selections = FirebaseFirestore.instance.collection("selections");
-
-              state.selection!.quantity = state.quantity;
-
-              await selections.doc(state.selection!.id).update({
-                "quantity": state.selection!.quantity,
-              });
-            }
-            state.setState(0);
-            await state.itemCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
-            utils.pageNav.currentState!.pushReplacement(
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => ShoppingScreen(),
-                transitionDuration: Duration.zero,
-              ),
-            );
-          },
-          text: "확인",
-          style: utils.resourceManager.textStyles.base,
-          h: 30,
-          w: 150,
-        ),
-        Container(
-          height: 80,
-        ),
-      ],
-    );
-  }
-
-  Widget getSizeFields () {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text("사이즈:"),
-        SizeEditButtons(state),
-        CustomButton(
-          whenPressed: () async {
-            if (state.size != state.selection!.item!.availableSizes!.indexOf(state.selection!.size)) {
-              CollectionReference selections = FirebaseFirestore.instance.collection("selections");
-
-              state.selection!.size = state.selection!.item!.availableSizes![state.size];
-
-              await selections.doc(state.selection!.id).update({
-                "size": state.selection!.size,
-              });
-            }
-            state.setState(0);
-            await state.itemCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
-            utils.pageNav.currentState!.pushReplacement(
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => ShoppingScreen(),
-                transitionDuration: Duration.zero,
-              ),
-            );
-          },
-          text: "확인",
-          style: utils.resourceManager.textStyles.base,
-          h: 30,
-          w: 150,
-        ),
-        Container(
-          height: 80,
-        ),
-      ],
     );
   }
 }

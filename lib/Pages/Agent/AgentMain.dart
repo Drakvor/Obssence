@@ -11,31 +11,22 @@ class AgentMain extends StatefulWidget {
   _AgentMainState createState() => _AgentMainState();
 }
 
-class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMixin {
-  late final AnimationController overlayCont;
+class _AgentMainState extends State<AgentMain> {
   late final TextEditingController textCont;
   bool buttonPressed = false;
-
-  void agentOff () {
-    overlayCont.animateTo(220, duration: Duration(milliseconds: 200), curve: Curves.linear);
-    utils.appManager.setAgentOff();
-  }
 
   @override
   void initState () {
     super.initState();
-    overlayCont = AnimationController.unbounded(value: 220, vsync: this);
     textCont = TextEditingController();
   }
 
   void dispose () {
-    overlayCont.dispose();
     textCont.dispose();
     super.dispose();
   }
 
   Widget build(BuildContext context) {
-    utils.appManager.setAgentFunction(agentOff);
 
     return Stack(
       children: [
@@ -46,84 +37,17 @@ class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMix
           width: 50,
           child: agentSymbol(),
         ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          top: 0,
-          child: buildCoverScreen(),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          left: 0,
-          height: 220,
-          child: buildOverlay(),
-        ),
       ],
-    );
-  }
-
-  Widget buildOverlay () {
-    return AnimatedBuilder(
-      animation: overlayCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, overlayCont.value, 0, 1,
-          ),
-          child: child,
-        );
-      },
-      child: GestureDetector(
-        onVerticalDragUpdate: (DragUpdateDetails details) {
-          overlayCont.animateTo((overlayCont.value + details.delta.dy > 20) ? overlayCont.value+details.delta.dy : 20, duration: Duration(seconds: 0), curve: Curves.linear);
-        },
-        onVerticalDragEnd: (DragEndDetails details) {
-          if (overlayCont.value > 100) {
-            overlayCont.animateTo(220, duration: Duration(milliseconds: 100), curve: Curves.linear);
-            utils.appManager.setAgentOff();
-          }
-          if (overlayCont.value <= 100) {
-            overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
-          }
-        },
-        onVerticalDragCancel: () {
-          overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
-        },
-        child: Container(
-          height: 220,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: utils.resourceManager.colours.background,
-          ),
-          child: buildOverlayContent(),
-        ),
-      ),
     );
   }
 
   Widget buildOverlayContent () {
     return Container(
+      height: 180,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 20,
-            child: GestureDetector(
-              onTap: () async {
-                await utils.appManager.agentOff!();
-              },
-              child: Center(
-                child: Image.asset(utils.resourceManager.images.downIndicator),
-              ),
-            ),
-          ),
           Container(
             child: Text("무엇을 도와드릴까요?"),
           ),
@@ -187,43 +111,11 @@ class _AgentMainState extends State<AgentMain> with SingleTickerProviderStateMix
     );
   }
 
-  Widget buildCoverScreen () {
-    return AnimatedBuilder(
-      animation: overlayCont,
-      builder: (context, child) {
-        return Transform(
-          transform: Matrix4(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, (overlayCont.value < 200) ? 0 : MediaQuery.of(context).size.height, 0, 1,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-              utils.appManager.agentOff!();
-            },
-            child: Opacity(
-              opacity: ((1-(overlayCont.value-20)/200)/2 >= 0) ? (1-(overlayCont.value-20)/200)/2 : 0,
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                color: Color(0xff000000),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget agentSymbol () {
     return GestureDetector(
       onTap: () {
-        if (!utils.appManager.agentOn){
-          overlayCont.animateTo(20, duration: Duration(milliseconds: 100), curve: Curves.linear);
-          utils.appManager.setAgentOn();
-        }
+        utils.appManager.loadOverlay!(200, buildOverlayContent());
+        utils.appManager.overlayCont.animateTo(1, duration: Duration(milliseconds: 150), curve: Curves.linear);
       },
       onTapDown: (TapDownDetails details) {
         setState(() {

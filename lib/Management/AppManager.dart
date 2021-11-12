@@ -36,6 +36,7 @@ class AppManager {
   bool loadCart = true;
   Function changeState;
   Function? agentOff;
+  Function? loadOverlay;
   int currentScreen = 0; //0: inactive, 1: login, 2:home
   TextEditingController searchControl = new TextEditingController();
   late AnimationController overlayCont;
@@ -227,11 +228,6 @@ class AppManager {
       CustomPageRoute(nextPage: LoginPage()),
     );
   }
-
-  void loadOverlay (double height, Widget overlay) {
-    
-  }
-
   void buildAlertDialog (BuildContext context, String text) {
     showDialog(
       barrierDismissible: true,

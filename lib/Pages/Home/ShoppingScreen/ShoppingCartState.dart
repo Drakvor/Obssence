@@ -4,12 +4,8 @@ import 'package:luxury_app_pre/Data/Order.dart';
 class ShoppingCartState {
   int state = 0; // 0 = normal, 1 = change quantity, 2 = change size
   OrderItem? selection;
-  AnimationController itemCont;
-
   int quantity = -1;
   int size = -1;
-
-  ShoppingCartState(this.itemCont);
 
 
   void setState (int data) {

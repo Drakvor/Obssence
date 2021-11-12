@@ -45,21 +45,6 @@ class _HomePageState extends State<HomePage> {
         },
       );
     }
-    if (utils.overlayNavObj == null) {
-      utils.overlayNavObj = Navigator(
-        key: utils.overlayNav,
-        initialRoute: "/main",
-        onGenerateInitialRoutes: (NavigatorState navigator, String initRouteName) {
-          return [navigator.widget.onGenerateRoute!(RouteSettings(name: "/"))!];
-        },
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            default:
-              return CustomPageRoute(nextPage: OverlayMain(0, Container()));
-          }
-        },
-      );
-    }
     initialised = utils.dataManager.getUserData();
     utils.appManager.setStateFunction(changeState);
     utils.appManager.setScreen(2);
@@ -84,8 +69,8 @@ class _HomePageState extends State<HomePage> {
   Widget buildFramework () {
     return WillPopScope(
       onWillPop: () async {
-        if (utils.appManager.agentOn) {
-          utils.appManager.agentOff!();
+        if (utils.appManager.overlayCont.value != 0) {
+          utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
           return false;
         }
         final pop = await utils.pageNav.currentState!.maybePop();
@@ -130,6 +115,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildOverlay () {
-    return utils.overlayNavObj!;
+    return OverlayMain();
   }
 }

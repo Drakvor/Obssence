@@ -4,21 +4,28 @@ import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 
 class OverlayMain extends StatefulWidget {
-  final double height;
-  final Widget contents;
-  OverlayMain(this.height, this.contents);
 
   @override
   _OverlayMainState createState() => _OverlayMainState();
 }
 
 class _OverlayMainState extends State<OverlayMain> with SingleTickerProviderStateMixin {
+  int height = 0;
+  Widget contents = Container();
   late AnimationController overlayCont;
+
+  void loadOverlay (int h, Widget c) {
+    setState(() {
+      height = h;
+      contents = c;
+    });
+  }
 
   @override
   void initState () {
     super.initState();
     overlayCont = AnimationController(vsync: this);
+    utils.appManager.loadOverlay = loadOverlay;
     utils.appManager.overlayCont = overlayCont;
   }
 
@@ -28,21 +35,23 @@ class _OverlayMainState extends State<OverlayMain> with SingleTickerProviderStat
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            child: coverScreen(),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: widget.height + 20,
-            child: overlayContents(),
-          ),
-        ],
-      ),
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          top: 0,
+          child: coverScreen(),
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: height + 20,
+          child: overlayContents(),
+        ),
+      ],
     );
   }
 
@@ -84,15 +93,32 @@ class _OverlayMainState extends State<OverlayMain> with SingleTickerProviderStat
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
-            0, (1-overlayCont.value)*widget.height + 20, 0, 1,
+            0, (1-overlayCont.value)*height + 20, 0, 1,
           ),
           child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragUpdate: (DragUpdateDetails details) {
+              overlayCont.animateTo((overlayCont.value - details.delta.dy/height >= 0 && overlayCont.value - details.delta.dy/height <= 1) ? overlayCont.value - details.delta.dy/height : overlayCont.value, duration: Duration(seconds: 0), curve: Curves.linear);
+            },
+            onVerticalDragEnd: (DragEndDetails details) {
+              if (overlayCont.value < 0.5) {
+                overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              }
+              if (overlayCont.value >= 0.5) {
+                overlayCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              }
+            },
+            onVerticalDragCancel: () {
+              overlayCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
+            },
             child: Container(
-              height: widget.height + 20,
+              height: height + 20,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
+                color: utils.resourceManager.colours.background,
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -109,14 +135,19 @@ class _OverlayMainState extends State<OverlayMain> with SingleTickerProviderStat
                       ),
                     ),
                   ),
-                  child!,
+                  Container(
+                    child: child!,
+                  ),
+                  (height > 20) ? Container(
+                    height: 20,
+                  ) : Container(),
                 ],
               ),
             ),
           ),
         );
       },
-      child: widget.contents,
+      child: contents,
     );
   }
 }
