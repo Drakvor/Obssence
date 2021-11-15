@@ -229,27 +229,37 @@ class AppManager {
     );
   }
 
-  void buildActionDialog (BuildContext context, String text, String action1, String action2, Function f1, Function f2) {
+  void buildActionDialog (BuildContext context, String text, String action1, String action2, {Function? f1, Function? f2}) {
     showDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
           content: Container(
-            child: Text(text),
+            child: Text(text, style: utils.resourceManager.textStyles.base12,),
           ),
           actions: [
             CupertinoDialogAction(
+              textStyle: utils.resourceManager.textStyles.base12black,
               onPressed: () {
+                if (f1 == null) {
+                  Navigator.of(context).pop();
+                  return;
+                }
                 f1();
               },
-              child: Text(action1),
+              child: Text(action1, style: utils.resourceManager.textStyles.base12black),
             ),
             CupertinoDialogAction(
+              textStyle: utils.resourceManager.textStyles.base12black,
               onPressed: () {
+                if (f2 == null) {
+                  Navigator.of(context).pop();
+                  return;
+                }
                 f2();
               },
-              child: Text(action2),
+              child: Text(action2, style: utils.resourceManager.textStyles.base12black),
             ),
           ],
         );

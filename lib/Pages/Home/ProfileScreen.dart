@@ -370,9 +370,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
               child: CustomButton(
-                whenPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  utils.appManager.logOutNav(utils.mainNav);
+                whenPressed: () async {
+                  utils.appManager.buildActionDialog(context, "로그아웃 하시겠습니까?", "네", "아니오", f1: () {FirebaseAuth.instance.signOut(); utils.appManager.logOutNav(utils.mainNav);Navigator.of(context).pop();},);
                 },
                 text: "로그아웃",
                 style: utils.resourceManager.textStyles.base14,
@@ -380,6 +379,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 h: 30,
               ),
             ),
+          ),
+          Container(
+            height: 40,
           ),
         ],
       ),

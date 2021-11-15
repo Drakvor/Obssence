@@ -12,6 +12,7 @@ class TextStyleRes {
   TextStyle base12_100U = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w100, decoration: TextDecoration.underline);
   TextStyle base12_700 = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w700);
   TextStyle base12_700U = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w700, decoration: TextDecoration.underline);
+  TextStyle base12black = TextStyle(fontFamily: "NanumSquare", fontSize: 12, color: Color(0xff000000));
   TextStyle base12grey = TextStyle(fontFamily: "NanumSquare", fontSize: 12, color: Color(0xffb9b9b9));
   TextStyle base12Sgrey = TextStyle(fontFamily: "NanumSquare", fontSize: 12, decoration: TextDecoration.lineThrough, color: Color(0xffb9b9b9));
   TextStyle base12_700gold = TextStyle(fontFamily: "NanumSquare", fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xffae946c));
