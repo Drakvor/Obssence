@@ -8,6 +8,7 @@ import 'package:luxury_app_pre/Pages/Login/LoginScreen/LoginState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:luxury_app_pre/Pages/HomePage.dart';
+import 'package:luxury_app_pre/Widget/CustomPhoneNumberField.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,28 +36,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final double keyboardWidthHeightRatio = 2/3;
 
+  FocusNode node = FocusNode();
+
   LoginState state = LoginState();
 
+  TextEditingController textControl = TextEditingController();
+
   bool validNumber () {
-    return (state.phoneNumber.length == phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+    return (textControl.text.length == phoneNumberKeys.length && textControl.text.substring(0, 3) == "010");
   }
 
   void clearPhoneNumber () {
     setState(() {
       state.phoneNumber = "";
+      textControl.clear();
     });
   }
 
   void appendToPhoneNumber (String number) {
     setState(() {
+      textControl.text = textControl.text + number;
       state.phoneNumber = state.phoneNumber + number;
     });
   }
 
   void subtractFromPhoneNumber () {
-    setState(() {
-      state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
-    });
+    if (textControl.text.length > 0) {
+      setState(() {
+        state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
+        textControl.text = textControl.text.substring(0, textControl.text.length - 1);
+      });
+    }
   }
 
   void appendToPassword (String character) {
@@ -83,6 +93,19 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  void setActivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = true;
+    });
+  }
+
+  void setInactivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = false;
+    });
+  }
+
+
   void setPhoneNumberError(bool value) {
     setState(() {
       state.phoneNumberError = value;
@@ -96,20 +119,27 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: (state.state == 0) ? utils.resourceManager.colours.background : utils.resourceManager.colours.backgroundSecond,
-      body: Stack(
-        children: [
-          (state.state == 0) ? getPhoneNumber() : getPassword(),
-          Positioned(
-            top: 0,
-            left: 0,
-            height: 50,
-            width: 50,
-            child: backButton(),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        setInactivatePhoneKeyboard();
+      },
+      child: Scaffold(
+        backgroundColor: (state.state == 0) ? utils.resourceManager.colours.background : utils.resourceManager.colours.backgroundSecond,
+        body: Stack(
+          children: [
+            (state.state == 0) ? getPhoneNumber() : getPassword(),
+            Positioned(
+              top: 0,
+              left: 0,
+              height: 50,
+              width: 50,
+              child: backButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -197,13 +227,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildPhoneNumberTextField () {
     return Container(
-      height: 50,
+      height: 40,
       width: MediaQuery.of(context).size.width,
       child: Center(
         child: Container(
-          height: 50,
-          width: (MediaQuery.of(context).size.width < 299) ? MediaQuery.of(context).size.width - 10 : 343,
           child: Stack(
+            children: [
+              CustomPhoneNumberField(textControl, "전화번호 기입", node, setActivatePhoneKeyboard),
+            ],
+          ),
+          /*child: Stack(
             children: [
               GestureDetector(
                 onTap: () {
@@ -263,7 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ],
-          ),
+          ),*/
         ),
       ),
     );
@@ -418,7 +451,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildPhoneNumberKeyboard () {
     return Keyboard(
       characterSet: phoneNumberKeys,
-      textFunction: (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberMaxLength)? appendToPhoneNumber : (String string){return;},
+      textFunction: appendToPhoneNumber,
       specialFunctions: [subtractFromPhoneNumber],
       specialImageSet: [utils.resourceManager.images.backButton],
       numRows: phoneNumberRows,

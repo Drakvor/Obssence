@@ -6,19 +6,21 @@ import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 class CustomPhoneNumberField extends StatefulWidget {
   final TextEditingController textControl;
   final String hintText;
+  final FocusNode node;
+  final Function setActive;
 
-  CustomPhoneNumberField(this.textControl, this.hintText);
+  CustomPhoneNumberField(this.textControl, this.hintText, this.node, this.setActive);
 
   @override
-  _CustomPhoneNumberFieldState createState() => _CustomPhoneNumberFieldState(textControl, hintText);
+  _CustomPhoneNumberFieldState createState() => _CustomPhoneNumberFieldState(textControl, hintText, node);
 }
 
 class _CustomPhoneNumberFieldState extends State<CustomPhoneNumberField> {
   final TextEditingController textControl;
   final String hintText;
-  final FocusNode node = new FocusNode();
+  final FocusNode node;
 
-  _CustomPhoneNumberFieldState(this.textControl, this.hintText);
+  _CustomPhoneNumberFieldState(this.textControl, this.hintText, this.node);
 
   @override
   Widget build (BuildContext context) {
@@ -32,18 +34,36 @@ class _CustomPhoneNumberFieldState extends State<CustomPhoneNumberField> {
       child: Stack(
         children: [
           Center(
-            child: node.hasFocus ? Image.asset(utils.resourceManager.images.searchBarImage) : Image.asset(utils.resourceManager.images.searchBarImageInactive),
+            child: node.hasFocus ? Image.asset(utils.resourceManager.images.phoneNumberField) : Image.asset(utils.resourceManager.images.phoneNumberFieldInactive),
+          ),
+          Positioned(
+            top: 5,
+            left: 8,
+            bottom: 5,
+            width: 30,
+            child: Image.asset(utils.resourceManager.images.flag),
+          ),
+          Positioned(
+            top: 5,
+            left: 40,
+            bottom: 5,
+            width: 30,
+            child: Center(
+              child: Text("+82"),
+            ),
           ),
           Positioned(
             top: 16,
-            left: 10,
+            left: 80,
             right: 10,
             bottom: 5,
             child: TextField(
               focusNode: node,
+              keyboardType: TextInputType.none,
               autofocus: false,
               controller: textControl,
               cursorColor: utils.resourceManager.colours.black,
+              style: utils.resourceManager.textStyles.base13,
               decoration: new InputDecoration(
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -53,16 +73,17 @@ class _CustomPhoneNumberFieldState extends State<CustomPhoneNumberField> {
                 hintText: hintText,
                 hintStyle: utils.resourceManager.textStyles.base13gold,
               ),
-              onSubmitted: (value) {
-                if (value.length < 40) {
-                  utils.agentManager.setSearchString(value);
-                  utils.appManager.changeState();
-                  textControl.clear();
-                  utils.agentManager.getAction(context);
-                }
-                else {
-                  //notify
-                }
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(node);
+                widget.setActive();
               },
             ),
           ),
@@ -73,6 +94,7 @@ class _CustomPhoneNumberFieldState extends State<CustomPhoneNumberField> {
             width: 30,
             child: CustomRoundButton(
               whenPressed: () {
+                print("hi");
                 textControl.clear();
               },
               image: utils.resourceManager.images.closeButton,

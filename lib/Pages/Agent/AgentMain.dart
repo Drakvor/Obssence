@@ -57,7 +57,7 @@ class _AgentMainState extends State<AgentMain> {
               children: [
                 CustomButton(
                   whenPressed: () async {
-                    await utils.appManager.agentOff!();
+                    await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
                     utils.appManager.toUserPage(context, utils.pageNav);
                   },
                   text: "고객님 메뉴",
@@ -67,7 +67,7 @@ class _AgentMainState extends State<AgentMain> {
                 ),
                 CustomButton(
                   whenPressed: () async {
-                    await utils.appManager.agentOff!();
+                    await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
                     utils.appManager.toOrderPage(context, utils.pageNav);
                   },
                   text: "배송조회",
@@ -85,7 +85,7 @@ class _AgentMainState extends State<AgentMain> {
               children: [
                 CustomButton(
                   whenPressed: () async {
-                    await utils.appManager.agentOff!();
+                    await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
                     utils.appManager.toShoppingPage(context, utils.pageNav);
                   },
                   text: "쇼핑백",
@@ -95,7 +95,7 @@ class _AgentMainState extends State<AgentMain> {
                 ),
                 CustomButton(
                   whenPressed: () async {
-                    await utils.appManager.agentOff!();
+                    await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
                     utils.appManager.toSearchPage(context, utils.pageNav);
                   },
                   text: "검색 홈",

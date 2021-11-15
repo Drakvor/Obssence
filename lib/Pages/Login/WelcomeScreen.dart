@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Pages/HomePage.dart';
+import 'package:luxury_app_pre/Widget/CustomPhoneNumberField.dart';
 
 class WelcomeScreen extends StatelessWidget {
 

@@ -75,15 +75,6 @@ class _UserScreenState extends State<UserScreen> {
                       width: 30,
                     ),
                     Text(utils.dataManager.user!.firstName + "님", style: utils.resourceManager.textStyles.base16,),
-                    CustomRoundButton(
-                        whenPressed: () {
-                          utils.appManager.toProfilePage(context, utils.pageNav);
-                        },
-                        image: utils.resourceManager.images.moreButton,
-                        imagePressed: utils.resourceManager.images.moreButton,
-                        h: 30,
-                        w: 30)
-                    //plus button
                   ],
                 ),
               ),
@@ -240,7 +231,7 @@ class _UserScreenState extends State<UserScreen> {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CustomButton(
             whenPressed: () {
               utils.appManager.toSettingsPage(context, utils.pageNav);
@@ -248,7 +239,18 @@ class _UserScreenState extends State<UserScreen> {
             text: "앱 설정",
             style: utils.resourceManager.textStyles.base14,
             h: 30,
-            w: 200
+            w: 200,
+          ),
+        ),Container(
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          child: CustomButton(
+              whenPressed: () {
+                utils.appManager.toProfilePage(context, utils.pageNav);
+              },
+              text: "회원정보수정",
+              style: utils.resourceManager.textStyles.base14,
+              h: 30,
+              w: 200,
           ),
         ),
       ],

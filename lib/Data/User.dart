@@ -18,13 +18,12 @@ class UserData {
   String notifications;
 
   String membership;
-
-
+  String membershipDate;
 
   ShoppingCart cart = new ShoppingCart();
   OrderList orders = new OrderList();
   ReturnsList returns = new ReturnsList();
-  UserData(this.id, this.uid, this.firstName, this.lastName, this.userName, this.joinedDate, this.membership, {this.notifications="false", this.invitations=0, this.address="", this.phoneNumber="", this.email="", this.size=0});
+  UserData(this.id, this.uid, this.firstName, this.lastName, this.userName, this.joinedDate, this.membership, {this.notifications="false", this.invitations=0, this.address="", this.phoneNumber="", this.email="", this.size=0, this.membershipDate="2021.11.04"});
 
   void toggleNotifications () {
     if (notifications == "true") {

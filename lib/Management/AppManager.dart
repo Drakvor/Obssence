@@ -35,7 +35,6 @@ class AppManager {
   bool appOpened = false;
   bool loadCart = true;
   Function changeState;
-  Function? agentOff;
   Function? loadOverlay;
   int currentScreen = 0; //0: inactive, 1: login, 2:home
   TextEditingController searchControl = new TextEditingController();
@@ -50,24 +49,12 @@ class AppManager {
     changeState = f;
   }
 
-  void setAgentFunction (Function f) {
-    agentOff = f;
-  }
-
   void setLoggedIn () {
     loggedIn = true;
   }
 
   void setLoggedOut () {
     loggedIn = false;
-  }
-
-  void setAgentOn () {
-    agentOn = true;
-  }
-
-  void setAgentOff () {
-    agentOn = false;
   }
 
   void setScreen (int data) {
@@ -240,5 +227,32 @@ class AppManager {
         );
       },
     );
+  }
+
+  void buildActionDialog (BuildContext context, String text, String action1, String action2, Function f1, Function f2) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            child: Text(text),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                f1();
+              },
+              child: Text(action1),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                f2();
+              },
+              child: Text(action2),
+            ),
+          ],
+        );
+      });
   }
 }

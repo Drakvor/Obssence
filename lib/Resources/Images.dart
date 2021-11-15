@@ -30,6 +30,7 @@ class ImageRes {
   late String upIndicator = _base + "UpIndicator.png";
 
   late String cross = _base + "CrossDecor.png";
+  late String flag = _base + "KoreaFlag.png";
 
   //Colours
   late Map<String, String> colours = {
