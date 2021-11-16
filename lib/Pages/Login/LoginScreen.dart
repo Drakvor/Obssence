@@ -55,8 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void appendToPhoneNumber (String number) {
     setState(() {
-      textControl.text = textControl.text + number;
       state.phoneNumber = state.phoneNumber + number;
+      textControl.text = textControl.text + number;
+      textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
     });
   }
 
@@ -65,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
         textControl.text = textControl.text.substring(0, textControl.text.length - 1);
+        textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
       });
     }
   }
@@ -364,23 +366,6 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         },
         text: "확인",
-        style: utils.resourceManager.textStyles.base14,
-        h: 30,
-        w: 50,
-      ),
-    );
-  }
-
-  Widget buildPhoneNumberClearButton () {
-    return Container(
-      child: CustomButton(
-        whenPressed: () async {
-          setState(() {
-            clearPhoneNumber();
-            setPhoneNumberError(false);
-          });
-        },
-        text: "Clear",
         style: utils.resourceManager.textStyles.base14,
         h: 30,
         w: 50,

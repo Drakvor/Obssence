@@ -8,6 +8,7 @@ import 'package:luxury_app_pre/Pages/Login/SignUpScreen/SignUpState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Pages/HomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:luxury_app_pre/Widget/CustomPhoneNumberField.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -37,26 +38,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final double keyboardWidthHeightRatio = 2/3;
 
+  FocusNode node = FocusNode();
+
+  TextEditingController textControl = TextEditingController();
+
   bool validNumber () {
-    return (state.phoneNumber.length == phoneNumberKeys.length && state.phoneNumber.substring(0, 3) == "010");
+    return (textControl.text.length == phoneNumberKeys.length && textControl.text.substring(0, 3) == "010");
   }
 
   void clearPhoneNumber () {
     setState(() {
       state.phoneNumber = "";
+      textControl.clear();
     });
   }
 
   void appendToPhoneNumber (String number) {
     setState(() {
       state.phoneNumber = state.phoneNumber + number;
+      textControl.text = textControl.text + number;
+      textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
     });
   }
 
   void subtractFromPhoneNumber () {
-    setState(() {
-      state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
-    });
+    if (textControl.text.length > 0) {
+      setState(() {
+        state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
+        textControl.text = textControl.text.substring(0, textControl.text.length - 1);
+        textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
+      });
+    }
   }
 
   void appendToPassword (String character) {
@@ -87,6 +99,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
+  void setActivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = true;
+    });
+  }
+
+  void setInactivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = false;
+    });
+  }
+
   void setPhoneNumberError(bool value) {
     setState(() {
       state.phoneNumberError = value;
@@ -101,19 +125,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: utils.resourceManager.colours.background,
-      body: Stack(
-        children: [
-          buildContent(),
-          Positioned(
-            top: 0,
-            left: 0,
-            height: 50,
-            width: 50,
-            child: backButton(),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        setInactivatePhoneKeyboard();
+      },
+      child: Scaffold(
+        backgroundColor: utils.resourceManager.colours.background,
+        body: Stack(
+          children: [
+            buildContent(),
+            Positioned(
+              top: 0,
+              left: 0,
+              height: 50,
+              width: 50,
+              child: backButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -210,68 +240,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget buildPhoneNumberTextField () {
     return Container(
-      height: 50,
+      height: 40,
       width: MediaQuery.of(context).size.width,
       child: Center(
         child: Container(
-          height: 50,
-          width: (MediaQuery.of(context).size.width < 299) ? MediaQuery.of(context).size.width - 10 : 343,
           child: Stack(
             children: [
-
-
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    toggleActivatePhoneKeyboard();
-                    setPhoneNumberError(false);
-                  });
-                },
-                child: Container(
-                  child: Center(
-                    child: Image.asset(utils.resourceManager.images.phoneNumberFieldInactive),
-                  ),
-                ),
-              ),
-
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: (MediaQuery.of(context).size.width < 299) ? (MediaQuery.of(context).size.width - 10)*(81/343) : 81,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      height: 50,
-                      child: Center(
-                        child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: (MediaQuery.of(context).size.width < 299) ? (MediaQuery.of(context).size.width - 10)*(81/343) : 81,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      height: 50,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text("+82", style: utils.resourceManager.textStyles.base13, textAlign: TextAlign.end,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              CustomPhoneNumberField(textControl, "전화번호 기입", node, setActivatePhoneKeyboard),
             ],
           ),
         ),
@@ -348,29 +323,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget buildPhoneNumberClearButton () {
-    return Container(
-      child: CustomButton(
-        whenPressed: () async {
-          setState(() {
-            clearPhoneNumber();
-            setPhoneNumberError(false);
-          });
-        },
-        text: "Clear",
-        style: utils.resourceManager.textStyles.base14,
-        h: 30,
-        w: 50,
-      ),
-    );
-  }
-
   Widget buildPhoneNumberButtons () {
     return Container(
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildPhoneNumberClearButton(),
               Container(
                 width: 20,
               ),
