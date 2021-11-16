@@ -94,7 +94,6 @@ class _CustomPhoneNumberFieldState extends State<CustomPhoneNumberField> {
             width: 30,
             child: CustomRoundButton(
               whenPressed: () {
-                print("hi");
                 textControl.clear();
               },
               image: utils.resourceManager.images.closeButton,

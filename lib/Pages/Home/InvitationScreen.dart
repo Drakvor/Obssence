@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Pages/Home/InvitationScreen/InvitationScreenState.dart';
+import 'package:luxury_app_pre/Pages/Login/LoginScreen/Keyboard.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
+import 'package:luxury_app_pre/Widget/CustomPhoneNumberField.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
@@ -18,25 +20,85 @@ class InvitationScreen extends StatefulWidget {
 
 class _InvitationScreenState extends State<InvitationScreen> {
   InvitationScreenState state = InvitationScreenState();
-  List<String> numberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
+  static List<String> phoneNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
+
+  static int phoneNumberRows = 4;
+  static int phoneNumberCols = 3;
+
+  final int phoneNumberMaxLength = 11;
+  final int passwordNumNumbers = 4;
+  final int passwordMaxLength = 5;
+
+  final double keyboardWidthHeightRatio = 2/3;
+
+  FocusNode node = FocusNode();
+
+  TextEditingController textControl = TextEditingController();
+
+  bool validNumber () {
+    return (textControl.text.length == phoneNumberKeys.length && textControl.text.substring(0, 3) == "010");
+  }
+
+  void clearPhoneNumber () {
+    setState(() {
+      state.phoneNumber = "";
+      textControl.clear();
+    });
+  }
+
+  void appendToPhoneNumber (String number) {
+    setState(() {
+      state.phoneNumber = state.phoneNumber + number;
+      textControl.text = textControl.text + number;
+      textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
+    });
+  }
+
+  void subtractFromPhoneNumber () {
+    if (textControl.text.length > 0) {
+      setState(() {
+        state.phoneNumber = state.phoneNumber.substring(0, state.phoneNumber.length - 1);
+        textControl.text = textControl.text.substring(0, textControl.text.length - 1);
+        textControl.selection = TextSelection.fromPosition(TextPosition(offset: textControl.text.length));
+      });
+    }
+  }
+
+  void setActivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = true;
+    });
+  }
+
+  void setInactivatePhoneKeyboard () {
+    setState(() {
+      state.phoneKeyboardActiveState = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: utils.resourceManager.colours.background,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Container(
-                child: mainHeader(),
-              ),
-              Expanded(
-                child: mainColumn(),
-              ),
-            ],
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        setInactivatePhoneKeyboard();
+      },
+      child: Scaffold(
+        backgroundColor: utils.resourceManager.colours.background,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Container(
+                  child: mainHeader(),
+                ),
+                Expanded(
+                  child: mainColumn(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -108,6 +170,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
                     PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
                     setState(() {
                       state.setNumber(contact.phoneNumber?.number?.replaceAll(new RegExp(r'[^0-9]'), '') ?? "");
+                      textControl.text = contact.phoneNumber?.number?.replaceAll(new RegExp(r'[^0-9]'), '') ?? "";
                     });
                   },
                   text: "주소록에서 불러오기",
@@ -125,14 +188,14 @@ class _InvitationScreenState extends State<InvitationScreen> {
                       {
                         "date": DateTime.now().year * 10000 + DateTime.now().month * 100 + DateTime.now().day,
                         "sender": utils.dataManager.user!.id,
-                        "target": state.phoneNumber,
+                        "target": textControl.text,
                       }
                     );
                     if (Platform.isAndroid) {
-                      await launch("sms:${state.phoneNumber}?body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
+                      await launch("sms:${textControl.text}?body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
                     }
                     if (Platform.isIOS) {
-                      await launch("sms:${state.phoneNumber};body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
+                      await launch("sms:${textControl.text};body=OBSSENCE 초대권이 있어서 초대해요. 귀빈 전용 서비스라 반드시 전화번호로만 가입이 가능해요. 링크입니다!");
                     }
                   },
                   text: "초대권 보내기",
@@ -148,7 +211,13 @@ class _InvitationScreenState extends State<InvitationScreen> {
             child: Container(),
           ),
           Container(
-            child: buildNumberKeyboard(),
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: AnimatedCrossFade(
+                duration: const Duration(milliseconds: 150),
+                firstChild: buildPhoneNumberKeyboard(),
+                secondChild: Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.width * keyboardWidthHeightRatio),
+                crossFadeState: state.phoneKeyboardActiveState ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+              )
           ),
         ],
       ),
@@ -157,57 +226,13 @@ class _InvitationScreenState extends State<InvitationScreen> {
 
   Widget buildNumberField () {
     return Container(
-      height: 50,
+      height: 40,
       width: MediaQuery.of(context).size.width,
       child: Center(
         child: Container(
-          height: 50,
-          width: (MediaQuery.of(context).size.width < 299) ? MediaQuery.of(context).size.width - 10 : 343,
           child: Stack(
             children: [
-              Container(
-                child: Center(
-                  child: Image.asset(utils.resourceManager.images.phoneNumberField),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: (MediaQuery.of(context).size.width < 299) ? (MediaQuery.of(context).size.width - 10)*(81/343) : 81,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      height: 50,
-                      child: Center(
-                        child: Text((state.phoneNumber.length > 0) ? state.phoneNumber : "전화번호", style: (state.phoneNumber.length > 0) ? utils.resourceManager.textStyles.base13 : utils.resourceManager.textStyles.base13grey,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                width: (MediaQuery.of(context).size.width < 299) ? (MediaQuery.of(context).size.width - 10)*(81/343) : 81,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      height: 50,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text("+82", textAlign: TextAlign.end,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              CustomPhoneNumberField(textControl, "전화번호 기입", node, setActivatePhoneKeyboard),
             ],
           ),
         ),
@@ -215,57 +240,15 @@ class _InvitationScreenState extends State<InvitationScreen> {
     );
   }
 
-  Widget buildNumberKeyboard () {
-    return Container(
-      height: MediaQuery.of(context).size.width*(2/3),
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent: MediaQuery.of(context).size.width*(2/3)/4,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          if (index < 11) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  state.appendNumber(numberKeys[index]);
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Text(numberKeys[index], textAlign: TextAlign.center, style: utils.resourceManager.textStyles.dots20,),
-                ),
-              ),
-            );
-          }
-          else {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  state.subtractNumber();
-                });
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.width*(2/3)/4,
-                width: MediaQuery.of(context).size.width/3,
-                color: utils.resourceManager.colours.almostBackground,
-                child: Center(
-                  child: Container(
-                    height: 20,
-                    child: Image.asset(utils.resourceManager.images.backButton),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
+  Widget buildPhoneNumberKeyboard () {
+    return Keyboard(
+      characterSet: phoneNumberKeys,
+      textFunction: appendToPhoneNumber,
+      specialFunctions: [subtractFromPhoneNumber],
+      specialImageSet: [utils.resourceManager.images.backButton],
+      numRows: phoneNumberRows,
+      numCols: phoneNumberCols,
+      style: utils.resourceManager.textStyles.base25,
     );
   }
 }

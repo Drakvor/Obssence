@@ -357,7 +357,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
               child: CustomButton(
-                whenPressed: () {
+                whenPressed: () async {
+                  bool state;
+                  state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오", f1: (context) {},);
+                  if (state) {
+                    state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오", f1: (context) {},);
+                    if (state) {
+                      //go to survey page
+                    }
+                  }
                 },
                 text: "멤버십 취소",
                 style: utils.resourceManager.textStyles.base14,
@@ -371,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Center(
               child: CustomButton(
                 whenPressed: () async {
-                  utils.appManager.buildActionDialog(context, "로그아웃 하시겠습니까?", "네", "아니오", f1: () {FirebaseAuth.instance.signOut(); utils.appManager.logOutNav(utils.mainNav);Navigator.of(context).pop();},);
+                  await utils.appManager.buildActionDialog(context, "로그아웃 하시겠습니까?", "네", "아니오", f1: (context) {FirebaseAuth.instance.signOut(); utils.appManager.logOutNav(utils.mainNav);},);
                 },
                 text: "로그아웃",
                 style: utils.resourceManager.textStyles.base14,

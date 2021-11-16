@@ -63,7 +63,7 @@ class _KeyboardButtonState extends State<KeyboardButton> {
       width: widget.w,
       color: (_pressed) ? utils.resourceManager.colours.white : (widget.dark ? utils.resourceManager.colours.backgroundSecond : utils.resourceManager.colours.background),
       child: Center(
-        child: widget.isText? Text(widget.text, textAlign: TextAlign.center, style: widget.dark ? utils.resourceManager.textStyles.base25white : utils.resourceManager.textStyles.base25,) : Image.asset(widget.imageStr),
+        child: widget.isText? Text(widget.text, textAlign: TextAlign.center, style: widget.dark ? utils.resourceManager.textStyles.base25white : utils.resourceManager.textStyles.base25,) : Image.asset(widget.imageStr, height: 25, width: 25,),
       ),
     );
   }

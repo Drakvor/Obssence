@@ -107,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-
   void setPhoneNumberError(bool value) {
     setState(() {
       state.phoneNumberError = value;

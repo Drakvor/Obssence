@@ -215,8 +215,8 @@ class AppManager {
       CustomPageRoute(nextPage: LoginPage()),
     );
   }
-  void buildAlertDialog (BuildContext context, String text) {
-    showDialog(
+  Future<void> buildAlertDialog (BuildContext context, String text) async {
+    await showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
@@ -229,8 +229,8 @@ class AppManager {
     );
   }
 
-  void buildActionDialog (BuildContext context, String text, String action1, String action2, {Function? f1, Function? f2}) {
-    showDialog(
+  Future<bool> buildActionDialog (BuildContext context, String text, String action1, String action2, {Function? f1, Function? f2}) async {
+    return await showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
@@ -243,10 +243,12 @@ class AppManager {
               textStyle: utils.resourceManager.textStyles.base12black,
               onPressed: () {
                 if (f1 == null) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                   return;
                 }
-                f1();
+                f1(context);
+                Navigator.of(context).pop(true);
+                return;
               },
               child: Text(action1, style: utils.resourceManager.textStyles.base12black),
             ),
@@ -254,15 +256,18 @@ class AppManager {
               textStyle: utils.resourceManager.textStyles.base12black,
               onPressed: () {
                 if (f2 == null) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(false);
                   return;
                 }
-                f2();
+                f2(context);
+                Navigator.of(context).pop(false);
+                return;
               },
               child: Text(action2, style: utils.resourceManager.textStyles.base12black),
             ),
           ],
         );
-      });
+      }
+    );
   }
 }
