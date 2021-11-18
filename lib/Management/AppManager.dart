@@ -9,6 +9,7 @@ import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Pages/Home/BrandScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen.dart';
 import 'package:luxury_app_pre/Data/Item.dart';
+import 'package:luxury_app_pre/Pages/Home/ExitSurveyScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ImageScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/InvitationScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ItemScreen.dart';
@@ -116,6 +117,12 @@ class AppManager {
   void toProfilePage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
       CustomPageRoute(nextPage: ProfileScreen()),
+    );
+  }
+
+  void toExitSurveyPage (BuildContext context, GlobalKey<NavigatorState> nav) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: ExitSurveyScreen()),
     );
   }
 

@@ -305,6 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
             child: Text("멤버십 설정", style: utils.resourceManager.textStyles.base14_700,),
           ),
+          CustomDividerShort(),
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
@@ -353,7 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          CustomDividerShort(),Container(
+          Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
               child: CustomButton(
@@ -361,9 +362,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   bool state;
                   state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오", f1: (context) {},);
                   if (state) {
-                    state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오", f1: (context) {},);
+                    state = await utils.appManager.buildActionDialog(context, "새라님의 피드백이 필요합니다.", "네", "아니오", f1: (context) {},);
                     if (state) {
-                      //go to survey page
+                      utils.appManager.toExitSurveyPage(context, utils.pageNav);
                     }
                   }
                 },

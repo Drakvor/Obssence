@@ -18,6 +18,8 @@ class _ReasonSelectionListState extends State<ReasonSelectionList> {
   final TextEditingController textControl = new TextEditingController();
   _ReasonSelectionListState(this.state);
 
+  bool textField = false;
+
   Map<String, List<String>> reasons = {
     "상품문제": ["상품이 파손됨", "상품이 설명과 다름", "주문한 상품과 다른 상품이 배송됨"],
     "배송문제": ["상품을 받지 못함", "배송된 장소에서 상품이 분실됨", "선택한 주소가 아닌 다른 주소로 배송됨"],
@@ -85,7 +87,11 @@ class _ReasonSelectionListState extends State<ReasonSelectionList> {
                     onTap: () {
                       state.setReason(reasons[reasonsIndex[index]]![i]);
                       if (index == 3 && i == 0) {
+                        textField = true;
                         state.setReason(textControl.text);
+                      }
+                      else {
+                        textField = false;
                       }
                       state.changeState!();
                     },
@@ -94,7 +100,7 @@ class _ReasonSelectionListState extends State<ReasonSelectionList> {
                       width: 40,
                       child: Stack(
                         children: [
-                          (state.reason == reasons[reasonsIndex[index]]![i]) ? buttonPressed() : buttonUnpressed(),
+                          (state.reason == reasons[reasonsIndex[index]]![i] || (index == 3 && i == 0 && textField)) ? buttonPressed() : buttonUnpressed(),
                           Center(
                             child: Container(
                               height: 20,
@@ -148,9 +154,19 @@ class _ReasonSelectionListState extends State<ReasonSelectionList> {
   }
 
   Widget buildTextField () {
-    return Container(
-      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-      child: CustomSearchBar(textControl, "*필수입력"),
+    return Column(
+      children: [
+        Container(
+          height: 40,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: CustomSearchBar(textControl, "*필수입력"),
+          ),
+        ),
+        Container(
+          height: 25,
+        ),
+      ],
     );
   }
 }

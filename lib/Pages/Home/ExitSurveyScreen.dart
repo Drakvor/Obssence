@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Pages/Home/ExitSurveyScreen/SurveyState.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
+import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'package:luxury_app_pre/Widget/CustomSearchBar.dart';
 
 class ExitSurveyScreen extends StatefulWidget {
@@ -18,16 +20,24 @@ class _ExitSurveyScreenState extends State<ExitSurveyScreen> {
   _ExitSurveyScreenState();
 
   Map<String, List<String>> reasons = {
-    "상품문제": ["상품이 파손됨", "상품이 설명과 다름", "주문한 상품과 다른 상품이 배송됨"],
-    "배송문제": ["상품을 받지 못함", "배송된 장소에서 상품이 분실됨", "선택한 주소가 아닌 다른 주소로 배송됨"],
-    "단순변심": ["상품 사이즈가 안맞음", "상품이 마음에 안듬", "가격 불만"],
-    "기타": ["그 외 문제"],
+    "상품 및 브랜드 문제": ["원하는 브랜드 및 상품이 없습니다.", "상품의 종류가 다양하지 않습니다.", "내게 맞는 사이즈가 없습니다."],
+    "앱 사용성 문제": ["글씨 및 이미지가 잘 보이지 않습니다.", "앱이 너무 복잡해서 사용하기 힘듭니다.", "앱 디자인이 고급지지 않습니다."],
+    "서비스 문제": ["가품일까 걱정 됩니다.", "회원비 대비 혜택이 좋지 않습니다.", "가격이 비씹니다."],
+    "기타": ["그 외 코멘트"],
   };
-  List<String> reasonsIndex = ["상품문제", "배송문제", "단순변심", "기타"];
+  List<String> reasonsIndex = ["상품 및 브랜드 문제", "앱 사용성 문제", "서비스 문제", "기타"];
 
   @override
   Widget build (BuildContext context) {
-    return Container();
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: utils.resourceManager.colours.background,
+        body: buildMain(),
+      ),
+    );
   }
 
   Widget buildMain() {
@@ -36,13 +46,24 @@ class _ExitSurveyScreenState extends State<ExitSurveyScreen> {
         Container(
           child: buildHeader(),
         ),
+        CustomDivider(),
         Expanded(
             child: buildList()
         ),
+        CustomDivider(),
         Container(
+          margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: CustomButton(
-            whenPressed: () {
+            whenPressed: () async {
+              CollectionReference feedbackRef = FirebaseFirestore.instance.collection('feedback');
 
+              await feedbackRef.add({
+                "user": utils.dataManager.user!.id,
+                "reason": state.reason,
+                "customReason": textControl.text,
+              });
+
+              utils.appManager.toProfilePage(context, utils.pageNav);
             },
             text: "보다 나은 서비스를 위한 제한",
             style: utils.resourceManager.textStyles.base14,
@@ -55,25 +76,49 @@ class _ExitSurveyScreenState extends State<ExitSurveyScreen> {
   }
 
   Widget buildHeader () {
-    return Container();
+    return Column(
+      children: [
+        Container(
+          height: 50,
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                top: 0,
+                width: 50,
+                height: 50,
+                child: CustomRoundButton(
+                  whenPressed: () {
+                    utils.appManager.previousPage(utils.pageNav);
+                  },
+                  image: utils.resourceManager.images.backButton,
+                  imagePressed: utils.resourceManager.images.backButton,
+                  h: 50,
+                  w: 50,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          height: 70,
+          child: Text("새라님의 피드백은 저희가 더 나은 서비스를 제공하기 위해 매우 중요합니다. 소중한 의견 반드시 서비스에 반영도록 하겠습니다.  어떤 문제가 있었나요?", style: utils.resourceManager.textStyles.base14_700,),
+        ),
+      ],
+    );
   }
 
   Widget buildList () {
     return ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: reasonsIndex.length + 2,
+        itemCount: reasonsIndex.length + 1,
         itemBuilder: (context, index) {
-          if (index == 0) {
-            return Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Text("어떤 문제가 있나요?", style: utils.resourceManager.textStyles.base14_700,),
-            );
-          }
-          if (index == reasonsIndex.length + 1) {
+          if (index == reasonsIndex.length) {
             return buildTextField();
           }
           return Column(
-            children: getReasons(index - 1),
+            children: getReasons(index),
           );
         }
     );
@@ -105,15 +150,9 @@ class _ExitSurveyScreenState extends State<ExitSurveyScreen> {
                       setState(() {
                         if (state.reason.contains(reasons[reasonsIndex[index]]![i])) {
                           state.removeReason(reasons[reasonsIndex[index]]![i]);
-                          if (index == 3 && i == 0) {
-                            state.removeReason(textControl.text);
-                          }
                         }
                         else {
                           state.addReason(reasons[reasonsIndex[index]]![i]);
-                          if (index == 3 && i == 0) {
-                            state.addReason(textControl.text);
-                          }
                         }
                       });
                     },
@@ -176,9 +215,19 @@ class _ExitSurveyScreenState extends State<ExitSurveyScreen> {
   }
 
   Widget buildTextField () {
-    return Container(
-      margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-      child: CustomSearchBar(textControl, "*필수입력"),
+    return Column(
+      children: [
+        Container(
+          height: 40,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: CustomSearchBar(textControl, "*필수입력"),
+          ),
+        ),
+        Container(
+          height: 25,
+        ),
+      ],
     );
   }
 }
