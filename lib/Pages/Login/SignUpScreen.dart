@@ -131,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         setInactivatePhoneKeyboard();
       },
       child: Scaffold(
-        backgroundColor: utils.resourceManager.colours.background,
+        backgroundColor: (state.state < 2) ? utils.resourceManager.colours.background : utils.resourceManager.colours.backgroundSecond,
         body: Stack(
           children: [
             buildContent(),
@@ -152,7 +152,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (state.state == 0) {
       return getPhoneNumber();
     }
-    else if (state.state == 1 || state.state == 2) {
+    else if (state.state == 1) {
+      return getWelcome();
+    }
+    else if (state.state == 2 || state.state == 3) {
       return getPassword();
     }
     return Container();
@@ -199,6 +202,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Widget getWelcome () {
+    return Container(
+      child: Column(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Container(),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Text("안녕하세요!", style: utils.resourceManager.textStyles.base16_700,),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Text("""새라님이 초대 하셨군요! 
+가입해주셔서 감사드립니다.😎 두분 모두 저희와 오래도록 좋은 인연을 만들어 갈 수 있으면 좋겠습니다!😆
+
+대부분의 가입절차는 다 되었어요. 앞으로 OBSSENCE에서 사용할 간단 비밀번호를 설정만 도와 드리겠습니다.""", style: utils.resourceManager.textStyles.base16,),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+          Container(
+            child: Center(
+              child: CustomButton(
+                whenPressed: () {
+                  setState(() {
+                    state.state++;
+                  });
+                },
+                text: "비밀번호 설정하기",
+                style: utils.resourceManager.textStyles.base14,
+                h: 30,
+                w: 135,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Container(),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget getPassword () {
     return Container(
       child: Column(
@@ -211,11 +265,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 5),
-            child:  Text((state.state == 1)? "OBSSENCE에서 사용할 비밀번호를 입력해 주세요." : "비밀번호를 재입력해 주세요.", style: utils.resourceManager.textStyles.base15_700),
+            child:  Text((state.state == 1)? "OBSSENCE에서 사용할 비밀번호를 입력해 주세요." : "비밀번호를 재입력해 주세요.", style: utils.resourceManager.textStyles.base15_700white),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 5, 0, 20),
-            child: Text("숫자 4자리 + 영문자 1자리", style: utils.resourceManager.textStyles.base15),
+            child: Text("숫자 4자리 + 영문자 1자리", style: utils.resourceManager.textStyles.base15white),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -264,12 +318,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Container(
             width: 50,
           ),
-          (state.currentPassword.length > 0) ? Container(width: 20, child: Text(state.currentPassword.substring(0, 1), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 1) ? Container(width: 20, child: Text(state.currentPassword.substring(1, 2), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 2) ? Container(width: 20, child: Text(state.currentPassword.substring(2, 3), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 3) ? Container(width: 20, child: Text(state.currentPassword.substring(3, 4), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 0) ? Container(width: 20, child: Text(state.currentPassword.substring(0, 1), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 1) ? Container(width: 20, child: Text(state.currentPassword.substring(1, 2), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 2) ? Container(width: 20, child: Text(state.currentPassword.substring(2, 3), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 3) ? Container(width: 20, child: Text(state.currentPassword.substring(3, 4), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(),
-          (state.currentPassword.length > 4) ? Container(width: 20, child: Text(state.currentPassword.substring(4, 5), style: utils.resourceManager.textStyles.base20, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 4) ? Container(width: 20, child: Text(state.currentPassword.substring(4, 5), style: utils.resourceManager.textStyles.base20white, textAlign: TextAlign.center,)) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(
             width: 50,
           ),
@@ -278,12 +332,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Container(
             width: 50,
           ),
-          (state.currentPassword.length > 0) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 1) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 2) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
-          (state.currentPassword.length > 3) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 0) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 1) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 2) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
+          (state.currentPassword.length > 3) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(),
-          (state.currentPassword.length > 4) ? Icon(Icons.star, color: Color(0xffffffff), size: 20) : Icon(Icons.star, color: Color(0xffbbbbbb), size: 20),
+          (state.currentPassword.length > 4) ? Icon(Icons.star, color: Color(0xffae946c), size: 20) : Icon(Icons.star, color: Color(0xffffffff), size: 20),
           Container(
             width: 50,
           ),
@@ -351,7 +405,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Container(
             key: Key("button1"),
             margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: CustomButton(
+            child: CustomDarkButton(
               whenPressed: () async {
                 if (state.currentPassword.length == 5) {
                   if (state.state == 1) {
@@ -398,7 +452,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 }
               },
               text: (state.state==1)? "확인" : "가입하기",
-              style: utils.resourceManager.textStyles.base14,
+              style: utils.resourceManager.textStyles.base14white,
               h: 25,
               w: 100,
             ),
@@ -411,7 +465,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget buildPhoneNumberKeyboard () {
     return Keyboard(
       characterSet: phoneNumberKeys,
-      textFunction: (state.phoneKeyboardActiveState && state.phoneNumber.length < phoneNumberMaxLength)? appendToPhoneNumber : (String string){return;},
+      textFunction: appendToPhoneNumber,
       specialFunctions: [subtractFromPhoneNumber],
       specialImageSet: [utils.resourceManager.images.backButton],
       numRows: phoneNumberRows,
@@ -429,6 +483,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       numRows: (state.currentPassword.length < passwordNumNumbers)? passwordNumberRows : passwordLetterRows,
       numCols: (state.currentPassword.length < passwordNumNumbers)? passwordNumberCols : passwordLetterCols,
       style: utils.resourceManager.textStyles.base25,
+      dark: true,
     );
   }
 
@@ -439,15 +494,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.5),
-        color: utils.resourceManager.colours.background,
+        color: utils.resourceManager.colours.backgroundSecond,
         boxShadow: [
           BoxShadow(
-            color: utils.resourceManager.colours.shadowDark,
+            color: utils.resourceManager.colours.shadowDarkSecond,
             offset: Offset(6, 2),
             blurRadius: 8,
           ),
           BoxShadow(
-            color: utils.resourceManager.colours.shadowLight,
+            color: utils.resourceManager.colours.shadowLightSecond,
             offset: Offset(-3, -2),
             blurRadius: 8,
           ),
@@ -460,7 +515,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: 30,
             width: 90,
             child: Center(
-              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14),
+              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14white),
             ),
           ),
         ),
@@ -475,19 +530,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: 90,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.5),
-        color: utils.resourceManager.colours.background,
+        color: utils.resourceManager.colours.backgroundSecond,
         gradient: LinearGradient(
           begin: Alignment(-0.02, -4),
           end: Alignment(0.02, 4),
           colors: [
-            utils.resourceManager.colours.shadowDark,
-            utils.resourceManager.colours.background,
-            utils.resourceManager.colours.shadowLight,
+            utils.resourceManager.colours.shadowDarkSecond,
+            utils.resourceManager.colours.backgroundSecond,
+            utils.resourceManager.colours.shadowLightSecond,
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: utils.resourceManager.colours.background,
+            color: utils.resourceManager.colours.backgroundSecond,
             spreadRadius: -20,
             offset: Offset(-10, -5),
           ),
@@ -500,7 +555,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: 30,
             width: 90,
             child: Center(
-              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14),
+              child: Text("입력값 보기", style: utils.resourceManager.textStyles.base14white),
             ),
           ),
         ),
@@ -512,7 +567,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget backButton () {
     return Container(
       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: CustomRoundButton(
+      child: (state.state < 2) ? CustomRoundButton(
         whenPressed: () {
           utils.appManager.previousPage(utils.loginNav);
         },
@@ -520,7 +575,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         imagePressed: utils.resourceManager.images.backButton,
         h: 40,
         w: 40,
-      ),
+      ) : Container(),
     );
   }
 }

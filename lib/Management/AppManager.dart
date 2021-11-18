@@ -76,6 +76,7 @@ class AppManager {
   }
 
   void toBrowsePage (BuildContext context, GlobalKey<NavigatorState> nav, {List<String>? tags}) {
+    print("why");
     if (tags != null) {
       utils.agentManager.setSearchTags(tags);
     }
