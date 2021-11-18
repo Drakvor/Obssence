@@ -165,11 +165,15 @@ class _BrowseScreenState extends State<BrowseScreen> {
                   height: (MediaQuery.of(context).size.width * 0.6),
                   child: BrowseItemTile(utils.dataManager.items![2*index + 1]),
                 ),
-                Container(
+                (2*index + 2 < utils.dataManager.items!.length) ? Container(
                   margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
                   width: (MediaQuery.of(context).size.width - 40)/2,
                   height: (MediaQuery.of(context).size.width * 0.6),
                   child: BrowseItemTile(utils.dataManager.items![2*index + 2]),
+                ) : Container(
+                  margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  width: (MediaQuery.of(context).size.width - 40)/2,
+                  height: (MediaQuery.of(context).size.width * 0.6),
                 ),
               ],
             ),

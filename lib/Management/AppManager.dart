@@ -21,6 +21,7 @@ import 'package:luxury_app_pre/Pages/Home/PostPaymentScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ProcessPaymentsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ProfileScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/ReturnsScreen.dart';
+import 'package:luxury_app_pre/Pages/Home/SearchResultsScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/SearchScreen.dart';
 import 'package:luxury_app_pre/Pages/Home/SettingsScreen.dart';
 import 'dart:io';
@@ -87,6 +88,12 @@ class AppManager {
   void toSearchPage (BuildContext context, GlobalKey<NavigatorState> nav) {
     nav.currentState!.push(
       CustomPageRoute(nextPage: SearchScreen()),
+    );
+  }
+
+  void toSearchResultsPage (BuildContext context, GlobalKey<NavigatorState> nav) {
+    nav.currentState!.push(
+      CustomPageRoute(nextPage: SearchResultsScreen()),
     );
   }
 

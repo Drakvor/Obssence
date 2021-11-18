@@ -6,8 +6,9 @@ import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 class CustomSearchBar extends StatefulWidget {
   final TextEditingController textControl;
   final String hintText;
+  final Function? onSubmit;
 
-  CustomSearchBar(this.textControl, this.hintText);
+  CustomSearchBar(this.textControl, this.hintText, {this.onSubmit});
 
   @override
   _CustomSearchBarState createState() => _CustomSearchBarState(textControl, hintText);
@@ -54,14 +55,14 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                 hintStyle: utils.resourceManager.textStyles.base13gold,
               ),
               onSubmitted: (value) {
-                if (value.length < 40) {
-                  utils.agentManager.setSearchString(value);
-                  utils.appManager.changeState();
-                  textControl.clear();
-                  utils.agentManager.getAction(context);
-                }
-                else {
-                  //notify
+                if (widget.onSubmit != null) {
+                  if (value.length < 40) {
+                    utils.dataManager.setTextInput(value);
+                    widget.onSubmit!();
+                  }
+                  else {
+                    utils.appManager.buildAlertDialog(context, "검색 문구가 너무 길어요!");
+                  }
                 }
               },
             ),

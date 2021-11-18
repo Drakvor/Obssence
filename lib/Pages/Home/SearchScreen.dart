@@ -51,7 +51,10 @@ class _SearchScreenState extends State<SearchScreen> {
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
-              child:  CustomSearchBar(textControl, "검색"),
+              child:  CustomSearchBar(textControl, "검색", onSubmit: () async {
+                await utils.dataManager.getSearchData();
+                utils.appManager.toSearchResultsPage(context,utils.pageNav);
+              }),
             ),
           ),
           Container(
@@ -61,7 +64,8 @@ class _SearchScreenState extends State<SearchScreen> {
               alignment: Alignment.centerLeft,
               child: CustomButton(
                   whenPressed: () {
-                    utils.appManager.toBrowsePage(context,utils.pageNav, tags: ["New"]);
+                    utils.dataManager.setTextInput("New");
+                    utils.appManager.toSearchResultsPage(context,utils.pageNav);
                   },
                   text: "신상품 보여줘",
                   style: utils.resourceManager.textStyles.base14,
@@ -77,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
               alignment: Alignment.centerLeft,
               child: CustomButton(
                   whenPressed: () {
-                    utils.appManager.toBrowsePage(context, utils.pageNav, tags: ["Gucci"]);
+                    utils.appManager.toSearchResultsPage(context,utils.pageNav);
                   },
                   text: "그냥 놀러와 봤어",
                   style: utils.resourceManager.textStyles.base14,

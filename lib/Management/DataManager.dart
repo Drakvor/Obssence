@@ -10,6 +10,8 @@ import 'package:luxury_app_pre/Data/Order.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 
 class DataManager {
+  String textInput = "";
+  List<String> textList = [];
 
   UserData? user;
   SearchTags? tags;
@@ -20,6 +22,94 @@ class DataManager {
   String apiKey = "4248e76ac1684446091c214ccde68c2037";
   String sessionId = "";
   DataManager({this.user, this.tags, this.items, this.orders});
+
+  void setTextInput (String data) {
+    textInput = data;
+    textList = data.split(" ");
+  }
+
+  Future<void> getSearchData () async {
+    CollectionReference productsRef = FirebaseFirestore.instance.collection('items');
+
+    QuerySnapshot snapshot = await productsRef.orderBy("date").where("name", whereIn: textList).get();
+    List<ItemData> itemList1 = [];
+    for (int i = 0; i < snapshot.docs.length; i++) {
+      ItemData newItem = ItemData(
+        name: snapshot.docs[i]["name"],
+        id: snapshot.docs[i].id,
+        brand: snapshot.docs[i]["brand"],
+        description: snapshot.docs[i]["description"],
+        descriptionLong: "",
+        price: snapshot.docs[i]["price"],
+        sku: snapshot.docs[i]["sku"],
+        madeIn: snapshot.docs[i]["madeIn"],
+        saleID: snapshot.docs[i]["sale"],
+        availableSizes: snapshot.docs[i]["sizes"].cast<String>(),
+        availableNumber: snapshot.docs[i]["availableNumber"],
+      );
+      await newItem.getSale();
+      itemList1.add(newItem);
+    }
+
+    snapshot = await productsRef.orderBy("date").where("brand", whereIn: textList).get();
+    List<ItemData> itemList2 = [];
+    for (int i = 0; i < snapshot.docs.length; i++) {
+      ItemData newItem = ItemData(
+        name: snapshot.docs[i]["name"],
+        id: snapshot.docs[i].id,
+        brand: snapshot.docs[i]["brand"],
+        description: snapshot.docs[i]["description"],
+        descriptionLong: "",
+        price: snapshot.docs[i]["price"],
+        sku: snapshot.docs[i]["sku"],
+        madeIn: snapshot.docs[i]["madeIn"],
+        saleID: snapshot.docs[i]["sale"],
+        availableSizes: snapshot.docs[i]["sizes"].cast<String>(),
+        availableNumber: snapshot.docs[i]["availableNumber"],
+      );
+      await newItem.getSale();
+      itemList2.add(newItem);
+    }
+
+    snapshot = await productsRef.orderBy("date").where("tags", arrayContainsAny: textList).get();
+    List<ItemData> itemList3 = [];
+    for (int i = 0; i < snapshot.docs.length; i++) {
+      ItemData newItem = ItemData(
+        name: snapshot.docs[i]["name"],
+        id: snapshot.docs[i].id,
+        brand: snapshot.docs[i]["brand"],
+        description: snapshot.docs[i]["description"],
+        descriptionLong: "",
+        price: snapshot.docs[i]["price"],
+        sku: snapshot.docs[i]["sku"],
+        madeIn: snapshot.docs[i]["madeIn"],
+        saleID: snapshot.docs[i]["sale"],
+        availableSizes: snapshot.docs[i]["sizes"].cast<String>(),
+        availableNumber: snapshot.docs[i]["availableNumber"],
+      );
+      await newItem.getSale();
+      itemList3.add(newItem);
+    }
+
+    for (int i = 0; i < itemList1.length; i++) {
+      if (itemList2.contains(itemList1[i])) {
+        itemList2.remove(itemList1[i]);
+      }
+      if (itemList3.contains(itemList1[i])) {
+        itemList3.remove(itemList1[i]);
+      }
+    }
+
+    for (int i = 0; i < itemList2.length; i++) {
+      if (itemList3.contains(itemList2[i])) {
+        itemList3.remove(itemList2[i]);
+      }
+    }
+
+    itemList2.addAll(itemList3);
+    itemList1.addAll(itemList2);
+    items = itemList1;
+  }
 
   Future<bool> getUserData () async {
     CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
