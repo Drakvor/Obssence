@@ -3,6 +3,8 @@ class SignUpState {
   bool phoneKeyboardActiveState = false;
   bool phoneNumberError = false;
 
+  List<bool> tnc = [false, false, false, false];
+
   String phoneNumber = "";
   String currentPassword = "";
   String finalisedPassword = "";

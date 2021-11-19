@@ -21,6 +21,7 @@ class ImageRes {
   late String closeButton = _base + "CloseButton.png";
   late String cartButton = _base + "CartButton.png";
   late String downButton = _base + "DownButton.png";
+  late String downButtonGrey = _base + "DownButtonGrey.png";
   late String moreButton = _base + "MoreButton.png";
   late String likeButton = _base + "LikeButton.png";
   late String likeButtonPressed = _base + "LikeButtonPressed.png";
@@ -31,6 +32,9 @@ class ImageRes {
 
   late String cross = _base + "CrossDecor.png";
   late String flag = _base + "KoreaFlag.png";
+
+  late String check = _base + "Check.png";
+  late String checkGrey = _base + "CheckGrey.png";
 
   //Colours
   late Map<String, String> colours = {

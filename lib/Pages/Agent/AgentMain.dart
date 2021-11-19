@@ -35,7 +35,7 @@ class _AgentMainState extends State<AgentMain> {
           right: 0,
           height: 50,
           width: 50,
-          child: agentSymbol(),
+          child: (utils.appManager.loggedIn) ? agentSymbol() : Container(),
         ),
       ],
     );

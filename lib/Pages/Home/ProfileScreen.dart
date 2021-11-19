@@ -360,9 +360,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: CustomButton(
                 whenPressed: () async {
                   bool state;
-                  state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오", f1: (context) {},);
+                  state = await utils.appManager.buildActionDialog(context, "멤버십을 취소 하시겠습니까?", "네", "아니오");
                   if (state) {
-                    state = await utils.appManager.buildActionDialog(context, "새라님의 피드백이 필요합니다.", "네", "아니오", f1: (context) {},);
+                    state = await utils.appManager.buildActionDialog(context, "새라님의 피드백이 필요합니다.", "네", "아니오");
                     if (state) {
                       utils.appManager.toExitSurveyPage(context, utils.pageNav);
                     }
@@ -380,7 +380,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Center(
               child: CustomButton(
                 whenPressed: () async {
-                  await utils.appManager.buildActionDialog(context, "로그아웃 하시겠습니까?", "네", "아니오", f1: (context) {FirebaseAuth.instance.signOut(); utils.appManager.logOutNav(utils.mainNav);},);
+                  bool temp = await utils.appManager.buildActionDialog(context, "로그아웃 하시겠습니까?", "네", "아니오");
+                  if (temp) {
+                    FirebaseAuth.instance.signOut();
+                    utils.appManager.logOutNav(utils.mainNav);
+                  }
                 },
                 text: "로그아웃",
                 style: utils.resourceManager.textStyles.base14,

@@ -209,7 +209,7 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("신용카드", style: utils.resourceManager.textStyles.base12_700,),
+                    Text("신용카드", style: (chosenOption == 0) ? utils.resourceManager.textStyles.base12_700gold : utils.resourceManager.textStyles.base12_700),
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: buttonImage(0),
@@ -224,7 +224,7 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("계좌이체", style: utils.resourceManager.textStyles.base12_700,),
+                    Text("계좌이체", style: (chosenOption == 1) ? utils.resourceManager.textStyles.base12_700gold : utils.resourceManager.textStyles.base12_700),
                     Container(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: buttonImage(1),
@@ -243,7 +243,7 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("현금결제", style: utils.resourceManager.textStyles.base12_700),
+                        Text("현금결제", style: (chosenOption == 2) ? utils.resourceManager.textStyles.base12_700gold : utils.resourceManager.textStyles.base12_700),
                         Container(
                           height: 5,
                         ),
@@ -303,7 +303,7 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                 height: 20,
                 width: 20,
                 child: Center(
-                  child: Image.asset(utils.resourceManager.images.downButton),
+                  child: (index == chosenOption) ? Image.asset(utils.resourceManager.images.downButton) : Image.asset(utils.resourceManager.images.downButtonGrey),
                 ),
               ),
             ),

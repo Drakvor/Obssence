@@ -261,7 +261,7 @@ class AppManager {
                   Navigator.of(context).pop(true);
                   return;
                 }
-                f1(context);
+                f1();
                 Navigator.of(context).pop(true);
                 return;
               },
@@ -274,7 +274,7 @@ class AppManager {
                   Navigator.of(context).pop(false);
                   return;
                 }
-                f2(context);
+                f2();
                 Navigator.of(context).pop(false);
                 return;
               },

@@ -17,7 +17,7 @@ class SignUpScreen extends StatefulWidget {
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
   SignUpState state = SignUpState();
   List<String> phoneNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "010", "0"];
   List<String> passwordNumberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0"];
@@ -41,6 +41,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode node = FocusNode();
 
   TextEditingController textControl = TextEditingController();
+
+  late AnimationController overlayCont;
 
   bool validNumber () {
     return (textControl.text.length == phoneNumberKeys.length && textControl.text.substring(0, 3) == "010");
@@ -124,6 +126,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
+  void initState () {
+    super.initState();
+    overlayCont = AnimationController(vsync: this);
+  }
+
+  void dispose () {
+    overlayCont.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -141,6 +153,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 50,
               width: 50,
               child: backButton(),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              top: 0,
+              child: coverScreen(),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 400 + 20,
+              child: overlayContents(),
             ),
           ],
         ),
@@ -367,7 +393,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             print("no invitation");
             return;
           }
-          nextState();
+          await overlayCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
         },
         text: "확인",
         style: utils.resourceManager.textStyles.base14,
@@ -576,6 +602,278 @@ class _SignUpScreenState extends State<SignUpScreen> {
         h: 40,
         w: 40,
       ) : Container(),
+    );
+  }
+
+  Widget coverScreen () {
+    return AnimatedBuilder(
+      animation: overlayCont,
+      builder: (context, child) {
+        return Transform(
+          transform: Matrix4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, (overlayCont.value == 0) ? MediaQuery.of(context).size.height : 0, 0, 1,
+          ),
+          child: GestureDetector(
+            onTap: () {
+              //turn off overlay.
+              overlayCont.animateTo(0, duration: Duration(milliseconds: 250), curve: Curves.linear);
+            },
+            child: Opacity(
+              opacity: overlayCont.value/2,
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        color: utils.resourceManager.colours.coverScreen,
+      ),
+    );
+  }
+
+  Widget overlayContents () {
+    return AnimatedBuilder(
+      animation: overlayCont,
+      builder: (context, child) {
+        return Transform(
+          transform: Matrix4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, (1-overlayCont.value)*400 + 20, 0, 1,
+          ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragUpdate: (DragUpdateDetails details) {
+              overlayCont.animateTo((overlayCont.value - details.delta.dy/400 >= 0 && overlayCont.value - details.delta.dy/400 <= 1) ? overlayCont.value - details.delta.dy/400 : overlayCont.value, duration: Duration(seconds: 0), curve: Curves.linear);
+            },
+            onVerticalDragEnd: (DragEndDetails details) {
+              if (overlayCont.value < 0.5) {
+                overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              }
+              if (overlayCont.value >= 0.5) {
+                overlayCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
+              }
+            },
+            onVerticalDragCancel: () {
+              overlayCont.animateTo(1, duration: Duration(milliseconds: 200), curve: Curves.linear);
+            },
+            child: Container(
+              height: 400 + 20,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: utils.resourceManager.colours.background,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      overlayCont.animateTo(0, duration: Duration(milliseconds: 250), curve: Curves.linear);
+                    },
+                    child: Container(
+                      height: 20,
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Container(
+                          height: 10,
+                          child: Image.asset(utils.resourceManager.images.downIndicator),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: child!,
+                  ),
+                  (400 > 20) ? Container(
+                    height: 20,
+                  ) : Container(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      child: termsAndConditions(),
+    );
+  }
+
+  Widget termsAndConditions () {
+
+    return Container(
+      margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomRoundToggled(
+                  whenPressed: () {
+                    setState(() {
+                      if (state.tnc[0]) {
+                        for (int i = 0; i < state.tnc.length; i++) {
+                          state.tnc[i] = false;
+                        }
+                      }
+                      else {
+                        for (int i = 0; i < state.tnc.length; i++) {
+                          state.tnc[i] = true;
+                        }
+                      }
+                    });
+                  },
+                  image: utils.resourceManager.images.checkGrey,
+                  imagePressed: utils.resourceManager.images.check,
+                  h: 50,
+                  w: 50,
+                  pressed: state.tnc[0],
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Text("약관에 모두 동의", style: utils.resourceManager.textStyles.base14_700,),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomRoundToggled(
+                  whenPressed: () {
+                    setState(() {
+                      state.tnc[1] = !state.tnc[1];
+                    });
+                  },
+                  image: utils.resourceManager.images.checkGrey,
+                  imagePressed: utils.resourceManager.images.check,
+                  h: 30,
+                  w: 30,
+                  pressed: state.tnc[1],
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Text("OBSSENCE 필수항목 모두 동의", style: utils.resourceManager.textStyles.base14_100,),
+                  ),
+                ),
+                CustomRoundButton(
+                  whenPressed: () {},
+                  image: utils.resourceManager.images.moreButton,
+                  imagePressed: utils.resourceManager.images.moreButton,
+                  h: 30,
+                  w: 30,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomRoundToggled(
+                  whenPressed: () {
+                    setState(() {
+                      state.tnc[2] = !state.tnc[2];
+                    });
+                  },
+                  image: utils.resourceManager.images.checkGrey,
+                  imagePressed: utils.resourceManager.images.check,
+                  h: 30,
+                  w: 30,
+                  pressed: state.tnc[2],
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Text("휴대폰 및 카드 서비스", style: utils.resourceManager.textStyles.base14_100,),
+                  ),
+                ),
+                CustomRoundButton(
+                  whenPressed: () {},
+                  image: utils.resourceManager.images.moreButton,
+                  imagePressed: utils.resourceManager.images.moreButton,
+                  h: 30,
+                  w: 30,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomRoundToggled(
+                  whenPressed: () {
+                    setState(() {
+                      state.tnc[3] = !state.tnc[3];
+                    });
+                  },
+                  image: utils.resourceManager.images.checkGrey,
+                  imagePressed: utils.resourceManager.images.check,
+                  h: 30,
+                  w: 30,
+                  pressed: state.tnc[3],
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Text("맞춤형 큐레이션 동의", style: utils.resourceManager.textStyles.base14_100,),
+                  ),
+                ),
+                CustomRoundButton(
+                  whenPressed: () {},
+                  image: utils.resourceManager.images.moreButton,
+                  imagePressed: utils.resourceManager.images.moreButton,
+                  h: 30,
+                  w: 30,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            width: MediaQuery.of(context).size.width,
+            child: Center(
+              child: CustomButton(
+                whenPressed: () async {
+                  if (state.tnc[1] && state.tnc[2] && state.tnc[3]) {
+                    await overlayCont.animateTo(0, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                    setState(() {
+                      state.state++;
+                    });
+                  }
+                  else {
+                    await utils.appManager.buildAlertDialog(context, "약관에 모두 동의해 주세요!");
+                  }
+                },
+                text: "확인",
+                style: utils.resourceManager.textStyles.base14,
+                h: 30,
+                w: 100,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

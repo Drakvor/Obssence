@@ -172,11 +172,14 @@ class _ShoppingCartItemState extends State<ShoppingCartItem> {
           width: 25,
           child: CustomRoundButton(
             whenPressed: () async {
-              CollectionReference selections = FirebaseFirestore.instance.collection("selections");
-              utils.dataManager.user!.cart.removeSelection(selection);
-              await selections.doc(selection.id).delete();
-              setPageState(() {});
-              utils.appManager.buildAlertDialog(context, "상품을 쇼핑백에서 제거했습니다.");
+              bool temp = await utils.appManager.buildActionDialog(context, selection.item!.name + "를 쇼핑백에서 제거 하시겠습니까?", "네", "아니오");
+              if (temp) {
+                CollectionReference selections = FirebaseFirestore.instance.collection("selections");
+                utils.dataManager.user!.cart.removeSelection(selection);
+                await selections.doc(selection.id).delete();
+                setPageState(() {});
+                utils.appManager.buildAlertDialog(context, "상품을 쇼핑백에서 제거했습니다.");
+              }
             },
             image: utils.resourceManager.images.closeButton,
             imagePressed: utils.resourceManager.images.closeButton,

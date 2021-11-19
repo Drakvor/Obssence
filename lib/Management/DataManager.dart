@@ -7,6 +7,7 @@ import 'package:luxury_app_pre/Data/Item.dart';
 import 'package:luxury_app_pre/Data/Tags.dart';
 import 'package:luxury_app_pre/Data/User.dart';
 import 'package:luxury_app_pre/Data/Order.dart';
+import 'package:luxury_app_pre/Data/Date.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 
 class DataManager {
@@ -18,6 +19,8 @@ class DataManager {
   List<ItemData>? items;
   List<OrderData>? orders;
   List<Brand>? brands;
+
+  MonthData? currentMonth;
 
   String apiKey = "4248e76ac1684446091c214ccde68c2037";
   String sessionId = "";
@@ -238,6 +241,25 @@ class DataManager {
     for (int i = 0; i < user!.orders.listOrders.length; i++) {
       await user!.orders.listOrders[i].getSelections();
     }
+  }
+
+  Future<void> getDateData (int m, int y) async {
+    CollectionReference datesRef = FirebaseFirestore.instance.collection('dates');
+
+    QuerySnapshot snapshot = await datesRef.where('month', isEqualTo: m).where('year', isEqualTo: y).get();
+
+    Map<int, DayData> temp = {};
+    for (int i = 0; i < snapshot.docs.length; i++) {
+      DayData newDate = DayData(
+        day: snapshot.docs[i]["day"],
+        dayName: snapshot.docs[i]["dayName"],
+        times: snapshot.docs[i]["times"].cast<String>(),
+        type: snapshot.docs[i]["type"],
+      );
+      temp[snapshot.docs[i]["day"]] = newDate;
+    }
+
+    currentMonth = MonthData(y, m, temp);
   }
 
   Future<void> accessApi () async {

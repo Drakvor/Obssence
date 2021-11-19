@@ -130,7 +130,7 @@ class _UserScreenState extends State<UserScreen> {
                       height: 50,
                       child: CustomRoundTextButton(
                         whenPressed: () {},
-                        text: "01",
+                        text: "1",
                         style: utils.resourceManager.textStyles.dots15,
                         h: 50,
                         w: 50,
@@ -139,7 +139,7 @@ class _UserScreenState extends State<UserScreen> {
                     Container(
                       height: 30,
                       child: Center(
-                        child: Text("초대권", style: utils.resourceManager.textStyles.base12,),
+                        child: Text("배송현황", style: utils.resourceManager.textStyles.base12,),
                       ),
                     ),
                   ],
@@ -154,8 +154,10 @@ class _UserScreenState extends State<UserScreen> {
                     Container(
                       height: 50,
                       child: CustomRoundTextButton(
-                        whenPressed: () {},
-                        text: "01",
+                        whenPressed: () {
+                          utils.appManager.toInvitationPage(context, utils.pageNav);
+                        },
+                        text: utils.dataManager.user!.invitations.toString(),
                         style: utils.resourceManager.textStyles.dots15,
                         h: 50,
                         w: 50,
@@ -184,18 +186,6 @@ class _UserScreenState extends State<UserScreen> {
       children: [
         Container(
           margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
-          child: CustomButton(
-            whenPressed: () {
-              utils.appManager.toInvitationPage(context, utils.pageNav);
-            },
-            text: "초대권",
-            style: utils.resourceManager.textStyles.base14,
-            h: 30,
-            w: 200,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CustomButton(
             whenPressed: () {
               utils.appManager.toOrderPage(context, utils.pageNav);
