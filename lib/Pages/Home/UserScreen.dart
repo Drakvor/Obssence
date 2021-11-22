@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -129,7 +130,24 @@ class _UserScreenState extends State<UserScreen> {
                     Container(
                       height: 50,
                       child: CustomRoundTextButton(
-                        whenPressed: () {},
+                        whenPressed: () async {
+                          /*DateTime temp = DateTime.now();
+                          temp = DateTime(temp.year, temp.month, 1);
+                          for (int i = 0; i < 500; i++) {
+                            CollectionReference datesRef = FirebaseFirestore.instance.collection('dates');
+                            await datesRef.add(
+                              {
+                                "day": temp.day,
+                                "month": temp.month,
+                                "year": temp.year,
+                                "dayName": temp.weekday,
+                                "times": ["Free", "Free", "Free", "Free", "Free", "Free", "Free", "Free", "Free", "Free"],
+                                "type": (temp.weekday != 7) ? "normal" : "off",
+                              }
+                            );
+                            temp = temp.add(Duration(days: 1));
+                          }*/
+                        },
                         text: "1",
                         style: utils.resourceManager.textStyles.dots15,
                         h: 50,

@@ -1,4 +1,4 @@
-package com.example.luxury_app_pre
+package com.luxury.luxury_app_pre
 
 import io.flutter.embedding.android.FlutterActivity
 
