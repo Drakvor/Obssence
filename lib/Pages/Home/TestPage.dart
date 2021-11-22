@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
-import 'package:social_embed_webview/platforms/instagram.dart';
-import 'package:social_embed_webview/social_embed_webview.dart';
+//import 'package:social_embed_webview/platforms/instagram.dart';
+//import 'package:social_embed_webview/social_embed_webview.dart';
 
 class TestPage extends StatefulWidget {
 
@@ -19,7 +19,7 @@ class _TestPageState extends State<TestPage> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 100, 10, 100),
-      child: SocialEmbed(socialMediaObj: InstagramEmbedData(embedHtml: instaContent)),
+      //child: SocialEmbed(socialMediaObj: InstagramEmbedData(embedHtml: instaContent)),
     );
   }
 }

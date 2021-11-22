@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:luxury_app_pre/Management/CustomPageRoute.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
+import 'package:kpostal/kpostal.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -173,6 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 80,
@@ -180,6 +183,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Expanded(
                   child: Text(utils.dataManager.user!.address, style: utils.resourceManager.textStyles.base12, textAlign: TextAlign.start,),
+                ),
+                Container(
+                  width: 30,
+                  child: CustomRoundButton(
+                    whenPressed: () async {
+                      await utils.pageNav.currentState!.push(
+                        CustomPageRoute(nextPage: KpostalView(
+                          callback: (Kpostal result) async {
+                            CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+                            await usersRef.doc(utils.dataManager.user!.id).update({
+                              "address": result.address,
+                            });
+                            utils.dataManager.user!.address = result.address;
+                            print(result.address);
+                          },
+                        ))
+                      );
+                    },
+                    image: utils.resourceManager.images.moreButton,
+                    imagePressed: utils.resourceManager.images.moreButton,
+                    w: 30,
+                    h: 30,
+                  ),
                 ),
               ],
             ),
