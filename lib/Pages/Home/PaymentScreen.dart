@@ -252,7 +252,9 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
                           children: [
                             Text((resState.date == 0) ? "날짜" : "2021년 10월 " + resState.date.toString() + "일", style: utils.resourceManager.textStyles.base12grey,),
                             CustomRoundButton(
-                              whenPressed: () {
+                              whenPressed: () async {
+                                DateTime temp = DateTime.now();
+                                await utils.dataManager.getDateData(temp.month, temp.year);
                                 reserveCont.animateTo(50, duration: Duration(milliseconds: 200), curve: Curves.linear);
                               },
                               image: utils.resourceManager.images.moreButton,
