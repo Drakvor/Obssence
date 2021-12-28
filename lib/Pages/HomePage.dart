@@ -10,6 +10,7 @@ import 'package:luxury_app_pre/Data/Tags.dart';
 import 'package:luxury_app_pre/Data/User.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen.dart';
 import 'package:luxury_app_pre/Pages/Agent/AgentMain.dart';
+import 'package:luxury_app_pre/Pages/Home/SearchScreen.dart';
 import 'package:luxury_app_pre/Pages/Overlay/OverlayMain.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             default:
-              return CustomPageRoute(nextPage: BrowseScreen());
+              return CustomPageRoute(nextPage: SearchScreen());
           }
         },
       );

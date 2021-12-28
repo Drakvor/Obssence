@@ -1,21 +1,21 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:luxury_app_pre/Data/Brand.dart';
+import 'package:lottie/lottie.dart';
 import 'package:luxury_app_pre/Management/Utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:luxury_app_pre/Data/Item.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen/BrowseItemTile.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen/TodayItemTile.dart';
 import 'package:luxury_app_pre/Widget/CustomButton.dart';
 import 'package:luxury_app_pre/Widget/CustomDivider.dart';
-import 'package:luxury_app_pre/Widget/CustomInnerShadow.dart';
-import 'package:luxury_app_pre/Widget/CustomRoundButton.dart';
 import 'package:luxury_app_pre/Widget/CustomRoundTextButton.dart';
 import 'package:luxury_app_pre/Pages/Home/BrowseScreen/BrandTile.dart';
 import 'package:luxury_app_pre/Widget/SearchBar.dart';
+import 'package:path_provider/path_provider.dart';
 //import 'package:luxury_app_pre/Widget/CustomScrollIndicator.dart';
 
 class BrowseScreen extends StatefulWidget {
@@ -27,12 +27,26 @@ class BrowseScreen extends StatefulWidget {
 class _BrowseScreenState extends State<BrowseScreen> {
   final PageController pageControl = PageController();
   final CarouselController brandControl = CarouselController();
+  final ScrollController scrollControl = ScrollController();
   late Future initialised;
+
+  void listen () {
+    if (scrollControl.offset >= scrollControl.position.maxScrollExtent) {
+      utils.appManager.loadOverlay!(200, buildRecommend());
+      utils.appManager.overlayCont.animateTo(1, duration: Duration(milliseconds: 150), curve: Curves.linear);
+    }
+  }
 
   @override
   void initState () {
     super.initState();
+    scrollControl.addListener(listen);
     initialised = Future.wait([utils.dataManager.getItemData(), utils.dataManager.getCartData()]);
+  }
+
+  void dispose() {
+    scrollControl.removeListener(listen);
+    super.dispose();
   }
 
   Widget build (BuildContext context) {
@@ -82,6 +96,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   Widget buildColumn (BuildContext context) {
     return ListView(
+      controller: scrollControl,
       physics: BouncingScrollPhysics(),
       children: [
         Container(
@@ -212,4 +227,67 @@ class _BrowseScreenState extends State<BrowseScreen> {
       ),
     );
   }
+
+  Widget buildRecommend () {
+    return Container(
+      height: 180,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("새로 나온 바지를 보고 싶으신가요?"),
+                CustomButton(
+                  whenPressed: () async {
+                    late List<File> images;
+                    images = await initTile();
+                    await utils.appManager.overlayCont.animateTo(0, duration: Duration(milliseconds: 150), curve: Curves.linear);
+                    utils.appManager.toItemPage(context, utils.pageNav, utils.dataManager.items![0], images);
+                  },
+                  text: "보러가기",
+                  style: utils.resourceManager.textStyles.base14,
+                  w: 100,
+                  h: 30,
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            width: 50,
+            height: 50,
+            child: Container(
+              child: Center(
+                child: Lottie.asset(utils.resourceManager.jsons.heartAnimation,
+                  width: 42,
+                  height: 42,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<List<File>> initTile () async {
+    List<File> imagesSaved = [];
+    ListResult results = await FirebaseStorage.instance.ref().child("Items").child(utils.dataManager.items![0].id).listAll();
+    Directory appImgDir = await getApplicationDocumentsDirectory();
+    for (int i = 0; i < results.items.length; i++) {
+      File image = File('${appImgDir.path}/' + utils.dataManager.items![0].id + results.items[i].name);
+      if (!image.existsSync()) {
+        print("Getting");
+        await FirebaseStorage.instance
+            .ref(results.items[i].fullPath)
+            .writeToFile(image);
+      }
+      imagesSaved.add(image);
+    }
+    return imagesSaved;
+  }
+
 }

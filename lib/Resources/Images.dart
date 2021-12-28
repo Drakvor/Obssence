@@ -36,6 +36,9 @@ class ImageRes {
   late String check = _base + "Check.png";
   late String checkGrey = _base + "CheckGrey.png";
 
+  late String bg1 = _base + "Colourful1.png";
+  late String bg2 = _base + "Colourful2.png";
+
   //Colours
   late Map<String, String> colours = {
     "orange": _base + "Orange.png",
