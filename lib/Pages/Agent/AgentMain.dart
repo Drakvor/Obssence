@@ -132,26 +132,12 @@ class _AgentMainState extends State<AgentMain> {
           buttonPressed = false;
         });
       },
-      child: Stack(
-        children: [
-          Center(
-            child: Container(
-              height: 40,
-              width: 40,
-              child: buttonPressed ? Image.asset(utils.resourceManager.images.roundButtonPressed) : Image.asset(utils.resourceManager.images.roundButton),
-            ),
-          ),
-          Center(
-            child: Container(
-              height: 20,
-              width: 20,
-              child: Icon(
-                Icons.more_horiz,
-                size: 20,
-              ),
-            ),
-          ),
-        ],
+      child: Center(
+        child: Container(
+          width: 42,
+          height: 42,
+          child: Lottie.asset(utils.resourceManager.jsons.heartAnimation),
+        ),
       ),
     );
   }

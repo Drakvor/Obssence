@@ -34,7 +34,6 @@ class _BrowseItemTileState extends State<BrowseItemTile> {
     for (int i = 0; i < results.items.length; i++) {
       File image = File('${appImgDir.path}/' + item.id + results.items[i].name);
       if (!image.existsSync()) {
-        print("Getting");
         await FirebaseStorage.instance
             .ref(results.items[i].fullPath)
             .writeToFile(image);

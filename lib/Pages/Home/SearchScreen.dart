@@ -21,10 +21,11 @@ class _SearchScreenState extends State<SearchScreen> {
       },
       child: Scaffold(
         backgroundColor: utils.resourceManager.colours.background,
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             buildMainColumn(),
-          ],
+          ],  
         ),
       ),
     );
@@ -64,13 +65,12 @@ class _SearchScreenState extends State<SearchScreen> {
               alignment: Alignment.centerLeft,
               child: CustomButton(
                   whenPressed: () {
-                    utils.dataManager.setTextInput("New");
-                    utils.appManager.toSearchResultsPage(context,utils.pageNav);
+                    utils.appManager.toBrowsePage(context, utils.pageNav);
                   },
-                  text: "신상품 보여줘",
+                  text: "그냥 놀러와 봤어",
                   style: utils.resourceManager.textStyles.base14,
                   h: 32,
-                  w: 108
+                  w: 127
               ),
             ),
           ),
@@ -81,12 +81,13 @@ class _SearchScreenState extends State<SearchScreen> {
               alignment: Alignment.centerLeft,
               child: CustomButton(
                   whenPressed: () {
-                    utils.appManager.toSearchResultsPage(context,utils.pageNav);
+                    utils.dataManager.setTextInput("New");
+                    utils.appManager.toSearchResultsPage(context, utils.pageNav);
                   },
-                  text: "그냥 놀러와 봤어",
+                  text: "신상품 보여줘",
                   style: utils.resourceManager.textStyles.base14,
                   h: 32,
-                  w: 127
+                  w: 108
               ),
             ),
           ),
